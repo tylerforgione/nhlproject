@@ -28,5 +28,5 @@
       }
     }
   },
-  "postCreateCommand": "cd backend && pip install -r requirements.txt && git config --global user.email 'tyler.forgione26@gmail.com' && git config --global user.name 'Tyler Forgione' && curl -fsSL https://chatgpt.com/codex/install.sh | sh"
+  "postCreateCommand": "cd backend && pip install -r requirements.txt && git config --global user.email 'tyler.forgione26@gmail.com' && git config --global user.name 'Tyler Forgione'"
 }
