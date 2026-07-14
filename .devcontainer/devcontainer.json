@@ -15,7 +15,8 @@
         "bradlc.vscode-tailwindcss",
         "ms-azuretools.vscode-docker",
         "eamodio.gitlens",
-        "usernamehw.errorlens"
+        "usernamehw.errorlens",
+        "openai.chatgpt"
       ],
       "settings": {
         "python.defaultInterpreterPath": "/usr/local/bin/python",
