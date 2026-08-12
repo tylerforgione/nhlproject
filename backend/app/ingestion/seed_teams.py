@@ -9,7 +9,7 @@ def seed_teams(json_path: str):
         with open(json_path, "r") as f:
             data = json.load(f)
 
-        for team_id, info in data.items:
+        for team_id, info in data.items():
             team = Team(
                 id=int(team_id),
                 name=info["name"],
@@ -31,4 +31,4 @@ def seed_teams(json_path: str):
 
 
 if __name__ == "__main__":
-    seed_teams("/workspace/backend/app/data/historical_teams.json")
+    seed_teams("/workspace/backend/data/historical_teams.json")
