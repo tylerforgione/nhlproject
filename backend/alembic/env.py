@@ -16,6 +16,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from app.db.base import Base
 from app.models.team import Team
+from app.models.season import Season
 
 config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
 
