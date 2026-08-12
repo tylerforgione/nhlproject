@@ -1,0 +1,602 @@
+{
+  "8": {
+    "stats_team_id": 8,
+    "schedule_team_id": 8,
+    "name": "Montr\u00e9al Canadiens",
+    "abbrev": "MTL",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/MTL_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/MTL_dark.svg",
+    "first_season": "19171918",
+    "last_season": "20252026"
+  },
+  "57": {
+    "stats_team_id": 57,
+    "schedule_team_id": 57,
+    "name": "Toronto Arenas",
+    "abbrev": "TAN",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/TAN_19171918-19181919_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/TAN_19171918-19181919_dark.svg",
+    "first_season": "19171918",
+    "last_season": "19181919"
+  },
+  "36": {
+    "stats_team_id": 36,
+    "schedule_team_id": 36,
+    "name": "Ottawa Senators (1917)",
+    "abbrev": "SEN",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/SEN_19171918-19331934_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/SEN_19171918-19331934_dark.svg",
+    "first_season": "19171918",
+    "last_season": "19331934"
+  },
+  "41": {
+    "stats_team_id": 41,
+    "schedule_team_id": 41,
+    "name": "Montreal Wanderers",
+    "abbrev": "MWN",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/MWN_19171918_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/MWN_19171918_dark.svg",
+    "first_season": "19171918",
+    "last_season": "19171918"
+  },
+  "58": {
+    "stats_team_id": 58,
+    "schedule_team_id": 58,
+    "name": "Toronto St. Patricks",
+    "abbrev": "TSP",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/TSP_19261927_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/TSP_19261927_dark.svg",
+    "first_season": "19191920",
+    "last_season": "19261927"
+  },
+  "42": {
+    "stats_team_id": 42,
+    "schedule_team_id": 42,
+    "name": "Quebec Bulldogs",
+    "abbrev": "QBD",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/QBD_19191920_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/QBD_19191920_dark.svg",
+    "first_season": "19191920",
+    "last_season": "19191920"
+  },
+  "37": {
+    "stats_team_id": 37,
+    "schedule_team_id": 37,
+    "name": "Hamilton Tigers",
+    "abbrev": "HAM",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/HAM_19231924-19241925_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/HAM_19231924-19241925_dark.svg",
+    "first_season": "19201921",
+    "last_season": "19241925"
+  },
+  "43": {
+    "stats_team_id": 43,
+    "schedule_team_id": 43,
+    "name": "Montreal Maroons",
+    "abbrev": "MMR",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/MMR_19351936-19371938_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/MMR_19351936-19371938_dark.svg",
+    "first_season": "19241925",
+    "last_season": "19371938"
+  },
+  "6": {
+    "stats_team_id": 6,
+    "schedule_team_id": 6,
+    "name": "Boston Bruins",
+    "abbrev": "BOS",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/BOS_light.svg?season=20252026",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/BOS_dark.svg?season=20252026",
+    "first_season": "19241925",
+    "last_season": "20252026"
+  },
+  "38": {
+    "stats_team_id": 38,
+    "schedule_team_id": 38,
+    "name": "Pittsburgh Pirates",
+    "abbrev": "PIR",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/PIR_19291930_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/PIR_19291930_dark.svg",
+    "first_season": "19251926",
+    "last_season": "19291930"
+  },
+  "44": {
+    "stats_team_id": 44,
+    "schedule_team_id": 44,
+    "name": "New York Americans",
+    "abbrev": "NYA",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/NYA_19401941_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/NYA_19401941_dark.svg",
+    "first_season": "19251926",
+    "last_season": "19401941"
+  },
+  "3": {
+    "stats_team_id": 3,
+    "schedule_team_id": 3,
+    "name": "New York Rangers",
+    "abbrev": "NYR",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/NYR_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/NYR_dark.svg",
+    "first_season": "19261927",
+    "last_season": "20252026"
+  },
+  "16": {
+    "stats_team_id": 16,
+    "schedule_team_id": 16,
+    "name": "Chicago Blackhawks",
+    "abbrev": "CHI",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/CHI_light.svg?season=20252026",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/CHI_dark.svg?season=20252026",
+    "first_season": "19261927",
+    "last_season": "20252026"
+  },
+  "40": {
+    "stats_team_id": 40,
+    "schedule_team_id": 40,
+    "name": "Detroit Cougars",
+    "abbrev": "DCG",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/DCG_19261927-19291930_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/DCG_19261927-19291930_dark.svg",
+    "first_season": "19261927",
+    "last_season": "19291930"
+  },
+  "10": {
+    "stats_team_id": 10,
+    "schedule_team_id": 10,
+    "name": "Toronto Maple Leafs",
+    "abbrev": "TOR",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/TOR_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/TOR_dark.svg",
+    "first_season": "19271928",
+    "last_season": "20252026"
+  },
+  "50": {
+    "stats_team_id": 50,
+    "schedule_team_id": 50,
+    "name": "Detroit Falcons",
+    "abbrev": "DFL",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/DFL_19301931-19311932_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/DFL_19301931-19311932_dark.svg",
+    "first_season": "19301931",
+    "last_season": "19311932"
+  },
+  "39": {
+    "stats_team_id": 39,
+    "schedule_team_id": 39,
+    "name": "Philadelphia Quakers",
+    "abbrev": "QUA",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/QUA_19301931_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/QUA_19301931_dark.svg",
+    "first_season": "19301931",
+    "last_season": "19301931"
+  },
+  "17": {
+    "stats_team_id": 17,
+    "schedule_team_id": 17,
+    "name": "Detroit Red Wings",
+    "abbrev": "DET",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/DET_light.svg?season=20252026",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/DET_dark.svg?season=20252026",
+    "first_season": "19321933",
+    "last_season": "20252026"
+  },
+  "45": {
+    "stats_team_id": 45,
+    "schedule_team_id": 45,
+    "name": "St. Louis Eagles",
+    "abbrev": "SLE",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/SLE_19341935_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/SLE_19341935_dark.svg",
+    "first_season": "19341935",
+    "last_season": "19341935"
+  },
+  "51": {
+    "stats_team_id": 51,
+    "schedule_team_id": 51,
+    "name": "Brooklyn Americans",
+    "abbrev": "BRK",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/BRK_19411942_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/BRK_19411942_dark.svg",
+    "first_season": "19411942",
+    "last_season": "19411942"
+  },
+  "4": {
+    "stats_team_id": 4,
+    "schedule_team_id": 4,
+    "name": "Philadelphia Flyers",
+    "abbrev": "PHI",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/PHI_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/PHI_dark.svg",
+    "first_season": "19671968",
+    "last_season": "20252026"
+  },
+  "26": {
+    "stats_team_id": 26,
+    "schedule_team_id": 26,
+    "name": "Los Angeles Kings",
+    "abbrev": "LAK",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/LAK_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/LAK_dark.svg",
+    "first_season": "19671968",
+    "last_season": "20252026"
+  },
+  "19": {
+    "stats_team_id": 19,
+    "schedule_team_id": 19,
+    "name": "St. Louis Blues",
+    "abbrev": "STL",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/STL_light.svg?season=20252026",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/STL_dark.svg?season=20252026",
+    "first_season": "19671968",
+    "last_season": "20252026"
+  },
+  "31": {
+    "stats_team_id": 31,
+    "schedule_team_id": 31,
+    "name": "Minnesota North Stars",
+    "abbrev": "MNS",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/MNS_19911992-19921993_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/MNS_19911992-19921993_dark.svg",
+    "first_season": "19671968",
+    "last_season": "19921993"
+  },
+  "5": {
+    "stats_team_id": 5,
+    "schedule_team_id": 5,
+    "name": "Pittsburgh Penguins",
+    "abbrev": "PIT",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/PIT_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/PIT_dark.svg",
+    "first_season": "19671968",
+    "last_season": "20252026"
+  },
+  "46": {
+    "stats_team_id": 46,
+    "schedule_team_id": 46,
+    "name": "Oakland Seals",
+    "abbrev": "OAK",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/OAK_19671968-19691970_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/OAK_19671968-19691970_dark.svg",
+    "first_season": "19671968",
+    "last_season": "19691970"
+  },
+  "7": {
+    "stats_team_id": 7,
+    "schedule_team_id": 7,
+    "name": "Buffalo Sabres",
+    "abbrev": "BUF",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/BUF_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/BUF_dark.svg",
+    "first_season": "19701971",
+    "last_season": "20252026"
+  },
+  "23": {
+    "stats_team_id": 23,
+    "schedule_team_id": 23,
+    "name": "Vancouver Canucks",
+    "abbrev": "VAN",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/VAN_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/VAN_dark.svg",
+    "first_season": "19701971",
+    "last_season": "20252026"
+  },
+  "56": {
+    "stats_team_id": 56,
+    "schedule_team_id": 56,
+    "name": "California Golden Seals",
+    "abbrev": "CGS",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/CGS_19741975-19761977_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/CGS_19741975-19761977_dark.svg",
+    "first_season": "19701971",
+    "last_season": "19751976"
+  },
+  "47": {
+    "stats_team_id": 47,
+    "schedule_team_id": 47,
+    "name": "Atlanta Flames",
+    "abbrev": "AFM",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/AFM_19721973-19791980_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/AFM_19721973-19791980_dark.svg",
+    "first_season": "19721973",
+    "last_season": "19791980"
+  },
+  "2": {
+    "stats_team_id": 2,
+    "schedule_team_id": 2,
+    "name": "New York Islanders",
+    "abbrev": "NYI",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/NYI_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/NYI_dark.svg",
+    "first_season": "19721973",
+    "last_season": "20252026"
+  },
+  "48": {
+    "stats_team_id": 48,
+    "schedule_team_id": 48,
+    "name": "Kansas City Scouts",
+    "abbrev": "KCS",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/KCS_19741975-19761977_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/KCS_19741975-19761977_dark.svg",
+    "first_season": "19741975",
+    "last_season": "19751976"
+  },
+  "15": {
+    "stats_team_id": 15,
+    "schedule_team_id": 15,
+    "name": "Washington Capitals",
+    "abbrev": "WSH",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/WSH_secondary_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/WSH_secondary_dark.svg",
+    "first_season": "19741975",
+    "last_season": "20252026"
+  },
+  "49": {
+    "stats_team_id": 49,
+    "schedule_team_id": 49,
+    "name": "Cleveland Barons",
+    "abbrev": "CLE",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/CLE_19761977-19771978_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/CLE_19761977-19771978_dark.svg",
+    "first_season": "19761977",
+    "last_season": "19771978"
+  },
+  "35": {
+    "stats_team_id": 35,
+    "schedule_team_id": 35,
+    "name": "Colorado Rockies",
+    "abbrev": "CLR",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/CLR_19761977-19811982_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/CLR_19761977-19811982_dark.svg",
+    "first_season": "19761977",
+    "last_season": "19811982"
+  },
+  "34": {
+    "stats_team_id": 34,
+    "schedule_team_id": 34,
+    "name": "Hartford Whalers",
+    "abbrev": "HFD",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/HFD_19921993-19961997_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/HFD_19921993-19961997_dark.svg",
+    "first_season": "19791980",
+    "last_season": "19961997"
+  },
+  "22": {
+    "stats_team_id": 22,
+    "schedule_team_id": 22,
+    "name": "Edmonton Oilers",
+    "abbrev": "EDM",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/EDM_dark.svg",
+    "first_season": "19791980",
+    "last_season": "20252026"
+  },
+  "32": {
+    "stats_team_id": 32,
+    "schedule_team_id": 32,
+    "name": "Quebec Nordiques",
+    "abbrev": "QUE",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/QUE_19791980-19941995_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/QUE_19791980-19941995_dark.svg",
+    "first_season": "19791980",
+    "last_season": "19941995"
+  },
+  "33": {
+    "stats_team_id": 33,
+    "schedule_team_id": 33,
+    "name": "Winnipeg Jets (1979)",
+    "abbrev": "WIN",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/WIN_19901991-19951996_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/WIN_19901991-19951996_dark.svg",
+    "first_season": "19791980",
+    "last_season": "19951996"
+  },
+  "20": {
+    "stats_team_id": 20,
+    "schedule_team_id": 20,
+    "name": "Calgary Flames",
+    "abbrev": "CGY",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/CGY_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/CGY_dark.svg",
+    "first_season": "19801981",
+    "last_season": "20252026"
+  },
+  "1": {
+    "stats_team_id": 1,
+    "schedule_team_id": 1,
+    "name": "New Jersey Devils",
+    "abbrev": "NJD",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/NJD_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/NJD_dark.svg",
+    "first_season": "19821983",
+    "last_season": "20252026"
+  },
+  "28": {
+    "stats_team_id": 28,
+    "schedule_team_id": 28,
+    "name": "San Jose Sharks",
+    "abbrev": "SJS",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/SJS_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/SJS_dark.svg",
+    "first_season": "19911992",
+    "last_season": "20252026"
+  },
+  "14": {
+    "stats_team_id": 14,
+    "schedule_team_id": 14,
+    "name": "Tampa Bay Lightning",
+    "abbrev": "TBL",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/TBL_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/TBL_dark.svg",
+    "first_season": "19921993",
+    "last_season": "20252026"
+  },
+  "9": {
+    "stats_team_id": 9,
+    "schedule_team_id": 9,
+    "name": "Ottawa Senators",
+    "abbrev": "OTT",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/OTT_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/OTT_dark.svg",
+    "first_season": "19921993",
+    "last_season": "20252026"
+  },
+  "25": {
+    "stats_team_id": 25,
+    "schedule_team_id": 25,
+    "name": "Dallas Stars",
+    "abbrev": "DAL",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/DAL_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/DAL_dark.svg",
+    "first_season": "19931994",
+    "last_season": "20252026"
+  },
+  "13": {
+    "stats_team_id": 13,
+    "schedule_team_id": 13,
+    "name": "Florida Panthers",
+    "abbrev": "FLA",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/FLA_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/FLA_dark.svg",
+    "first_season": "19931994",
+    "last_season": "20252026"
+  },
+  "24": {
+    "stats_team_id": 24,
+    "schedule_team_id": 24,
+    "name": "Anaheim Ducks",
+    "abbrev": "ANA",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/ANA_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/ANA_dark.svg",
+    "first_season": "19931994",
+    "last_season": "20252026"
+  },
+  "21": {
+    "stats_team_id": 21,
+    "schedule_team_id": 21,
+    "name": "Colorado Avalanche",
+    "abbrev": "COL",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/COL_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/COL_dark.svg",
+    "first_season": "19951996",
+    "last_season": "20252026"
+  },
+  "27": {
+    "stats_team_id": 27,
+    "schedule_team_id": 27,
+    "name": "Phoenix Coyotes",
+    "abbrev": "PHX",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/PHX_20032004-20132014_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/PHX_20032004-20132014_dark.svg",
+    "first_season": "19961997",
+    "last_season": "20132014"
+  },
+  "12": {
+    "stats_team_id": 12,
+    "schedule_team_id": 12,
+    "name": "Carolina Hurricanes",
+    "abbrev": "CAR",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/CAR_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/CAR_dark.svg",
+    "first_season": "19971998",
+    "last_season": "20252026"
+  },
+  "18": {
+    "stats_team_id": 18,
+    "schedule_team_id": 18,
+    "name": "Nashville Predators",
+    "abbrev": "NSH",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/NSH_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/NSH_dark.svg",
+    "first_season": "19981999",
+    "last_season": "20252026"
+  },
+  "11": {
+    "stats_team_id": 11,
+    "schedule_team_id": 11,
+    "name": "Atlanta Thrashers",
+    "abbrev": "ATL",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/ATL_19992000-20102011_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/ATL_19992000-20102011_dark.svg",
+    "first_season": "19992000",
+    "last_season": "20102011"
+  },
+  "29": {
+    "stats_team_id": 29,
+    "schedule_team_id": 29,
+    "name": "Columbus Blue Jackets",
+    "abbrev": "CBJ",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/CBJ_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/CBJ_dark.svg",
+    "first_season": "20002001",
+    "last_season": "20252026"
+  },
+  "30": {
+    "stats_team_id": 30,
+    "schedule_team_id": 30,
+    "name": "Minnesota Wild",
+    "abbrev": "MIN",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/MIN_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/MIN_dark.svg",
+    "first_season": "20002001",
+    "last_season": "20252026"
+  },
+  "52": {
+    "stats_team_id": 52,
+    "schedule_team_id": 52,
+    "name": "Winnipeg Jets",
+    "abbrev": "WPG",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/WPG_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/WPG_dark.svg",
+    "first_season": "20112012",
+    "last_season": "20252026"
+  },
+  "53": {
+    "stats_team_id": 53,
+    "schedule_team_id": 53,
+    "name": "Arizona Coyotes",
+    "abbrev": "ARI",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/ARI_20202021-20232024_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/ARI_20202021-20232024_dark.svg",
+    "first_season": "20142015",
+    "last_season": "20232024"
+  },
+  "54": {
+    "stats_team_id": 54,
+    "schedule_team_id": 54,
+    "name": "Vegas Golden Knights",
+    "abbrev": "VGK",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/VGK_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/VGK_dark.svg",
+    "first_season": "20172018",
+    "last_season": "20252026"
+  },
+  "55": {
+    "stats_team_id": 55,
+    "schedule_team_id": 55,
+    "name": "Seattle Kraken",
+    "abbrev": "SEA",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/SEA_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/SEA_dark.svg",
+    "first_season": "20212022",
+    "last_season": "20252026"
+  },
+  "59": {
+    "stats_team_id": 59,
+    "schedule_team_id": 59,
+    "name": "Utah Hockey Club",
+    "abbrev": "UTA",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/UTA_20242025-20242025_light.svg",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/UTA_20242025-20242025_dark.svg",
+    "first_season": "20242025",
+    "last_season": "20242025"
+  },
+  "68": {
+    "stats_team_id": 68,
+    "schedule_team_id": 68,
+    "name": "Utah Mammoth",
+    "abbrev": "UTA",
+    "logo": "https://assets.nhle.com/logos/nhl/svg/UTA_light.svg?season=20252026",
+    "dark_logo": "https://assets.nhle.com/logos/nhl/svg/UTA_dark.svg?season=20252026",
+    "first_season": "20252026",
+    "last_season": "20252026"
+  }
+}
