@@ -18,6 +18,7 @@ from app.db.base import Base
 from app.models.team import Team
 from app.models.season import Season
 from app.models.standing import Standing
+from app.models.player import Player
 
 config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
 
