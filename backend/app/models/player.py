@@ -8,7 +8,6 @@ class Player(Base):
     id = Column(Integer, primary_key=True)
     first_name = Column(String(50), nullable=False)
     last_name = Column(String(50), nullable=False)
-    sweater_number = Column(Integer)
     position_code = Column(String(1))
     shoots_catches = Column(String(1))
     height_in_inches = Column(Integer)
