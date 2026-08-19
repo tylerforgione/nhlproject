@@ -12,9 +12,7 @@ def ingest_players(season_id: int):
     client = NHLClient()
     db = SessionLocal()
 
-    # Prevent duplicate objects within this season before commit()
     seen_player_ids = set()
-    seen_roster_entries = set()
 
     try:
         teams = (
@@ -26,7 +24,8 @@ def ingest_players(season_id: int):
 
         for team in teams:
             roster = client.teams.team_roster(
-                team_abbr=team.abbrev, season=str(season_id)
+                team_abbr=team.abbrev,
+                season=str(season_id),
             )
 
             all_players = (
@@ -38,63 +37,40 @@ def ingest_players(season_id: int):
             for p in all_players:
                 player_id = p["id"]
 
-                # -------------------------
-                # PLAYER
-                # -------------------------
-                if player_id not in seen_player_ids:
-                    player = Player(
-                        id=player_id,
-                        first_name=p["firstName"]["default"],
-                        last_name=p["lastName"]["default"],
-                        position_code=p.get("positionCode"),
-                        shoots_catches=p.get("shootsCatches"),
-                        height_in_inches=p.get("heightInInches"),
-                        weight_in_pounds=p.get("weightInPounds"),
-                        height_in_centimeters=p.get("heightInCentimeters"),
-                        weight_in_kilograms=p.get("weightInKilograms"),
-                        birth_date=(
-                            date.fromisoformat(p["birthDate"])
-                            if p.get("birthDate")
-                            else None
-                        ),
-                        birth_city=p.get("birthCity", {}).get("default"),
-                        birth_country=p.get("birthCountry"),
-                        birth_state_province=(
-                            p.get("birthStateProvince", {}).get("default")
-                        ),
-                        headshot_url=p.get("headshot"),
-                    )
+                if player_id in seen_player_ids:
+                    continue
 
-                    db.merge(player)
-                    seen_player_ids.add(player_id)
-
-                # -------------------------
-                # ROSTER ENTRY
-                # -------------------------
-                roster_key = (
-                    player_id,
-                    team.id,
-                    season_id,
+                player = Player(
+                    id=player_id,
+                    first_name=p["firstName"]["default"],
+                    last_name=p["lastName"]["default"],
+                    position_code=p.get("positionCode"),
+                    shoots_catches=p.get("shootsCatches"),
+                    height_in_inches=p.get("heightInInches"),
+                    weight_in_pounds=p.get("weightInPounds"),
+                    height_in_centimeters=p.get("heightInCentimeters"),
+                    weight_in_kilograms=p.get("weightInKilograms"),
+                    birth_date=(
+                        date.fromisoformat(p["birthDate"])
+                        if p.get("birthDate")
+                        else None
+                    ),
+                    birth_city=p.get("birthCity", {}).get("default"),
+                    birth_country=p.get("birthCountry"),
+                    birth_state_province=(
+                        p.get("birthStateProvince", {}).get("default")
+                    ),
+                    headshot_url=p.get("headshot"),
                 )
 
-                if roster_key not in seen_roster_entries:
-                    roster_entry = Roster(
-                        player_id=player_id,
-                        team_id=team.id,
-                        season_id=season_id,
-                        sweater_number=p.get("sweaterNumber"),
-                        position_code=p.get("positionCode"),
-                    )
-
-                    db.add(roster_entry)
-                    seen_roster_entries.add(roster_key)
+                db.merge(player)
+                seen_player_ids.add(player_id)
 
         db.commit()
-        print(f"Ingested players and rosters for season {season_id}")
 
-    except Exception as e:
+    except Exception:
         db.rollback()
-        raise e
+        raise
 
     finally:
         db.close()
