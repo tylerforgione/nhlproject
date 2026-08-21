@@ -12,3 +12,4 @@ class Team(Base):
     first_season = Column(String(8))
     last_season = Column(String(8))
     is_active = Column(Boolean, default=False)
+    is_nhl = Column(Boolean, default=True)
