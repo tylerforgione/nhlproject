@@ -23,6 +23,9 @@ from app.models.roster import Roster
 from app.models.skater_stats import SkaterStats
 from app.models.goalie_stats import GoalieStats
 from app.models.game import Game
+from app.models.game_result import GameResult
+from app.models.skater_game_stats import SkaterGameStats
+from app.models.goalie_game_stats import GoalieGameStats
 
 config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
 
