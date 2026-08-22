@@ -1,4 +1,5 @@
 from nhlpy import NHLClient
+
 import re
 import unicodedata
 
@@ -10,6 +11,34 @@ from app.models.team import Team
 from app.models.season import Season
 from app.models.skater_stats import SkaterStats
 from app.models.goalie_stats import GoalieStats
+
+# ---------------------------------------------------------
+# CACHE
+# ---------------------------------------------------------
+
+# Cache team roster responses by:
+#
+#     (team_abbrev, season_id)
+#
+# Example:
+#
+#     ("MTL", 20252026)
+#
+# becomes:
+#
+#     {
+#         player_id: sweater_number,
+#         ...
+#     }
+#
+# This prevents us from making the same team-roster API call
+# again for every single player.
+ROSTER_CACHE = {}
+
+
+# ---------------------------------------------------------
+# HELPERS
+# ---------------------------------------------------------
 
 
 def toi_to_seconds(toi: str | None):
@@ -25,29 +54,42 @@ def normalize_team_name(name: str):
     Normalize API/database team names for comparison.
 
     Examples:
+
         Montréal Canadiens -> montreal canadiens
         Ottawa Senators (1917) -> ottawa senators
     """
+
     if not name:
         return ""
 
     name = unicodedata.normalize("NFKD", name)
+
     name = "".join(c for c in name if not unicodedata.combining(c))
 
     # Remove parenthetical suffixes such as "(1917)"
-    name = re.sub(r"\s*\([^)]*\)\s*", " ", name)
+    name = re.sub(
+        r"\s*\([^)]*\)\s*",
+        " ",
+        name,
+    )
 
     return " ".join(name.lower().split())
 
 
-def find_team(db, api_team_name: str, season_id: int):
+def find_team(
+    db,
+    api_team_name: str,
+    season_id: int,
+):
     """
     Match the team name returned by the NHL player endpoint
     to a Team in our database.
     """
+
     normalized_api_name = normalize_team_name(api_team_name)
 
     teams = db.query(Team).all()
+
     candidates = []
 
     for team in teams:
@@ -75,6 +117,7 @@ def find_team(db, api_team_name: str, season_id: int):
             f"{api_team_name} in {season_id}: "
             f"{[team.name for team in candidates]}"
         )
+
         return None
 
     print(f"WARNING: Could not match team " f"'{api_team_name}' for season {season_id}")
@@ -82,29 +125,93 @@ def find_team(db, api_team_name: str, season_id: int):
     return None
 
 
-def add_nullable(existing_value, new_value):
+def get_sweater_number(
+    client,
+    team: Team,
+    season_id: int,
+    player_id: int,
+):
+    """
+    Fetch a player's sweater number from the NHL team roster
+    endpoint.
+
+    The roster response is cached per team-season so we only
+    make one API call for each combination.
+    """
+
+    cache_key = (
+        team.abbrev,
+        season_id,
+    )
+
+    if cache_key not in ROSTER_CACHE:
+        try:
+            roster_data = client.teams.team_roster(
+                team_abbr=team.abbrev,
+                season=str(season_id),
+            )
+
+            all_players = (
+                roster_data.get("forwards", [])
+                + roster_data.get("defensemen", [])
+                + roster_data.get("goalies", [])
+            )
+
+            ROSTER_CACHE[cache_key] = {
+                p["id"]: p.get("sweaterNumber")
+                for p in all_players
+                if p.get("id") is not None
+            }
+
+        except Exception as e:
+            print(
+                f"WARNING: Could not get roster for " f"{team.abbrev} {season_id}: {e}"
+            )
+
+            # Cache the failure too so we don't repeatedly
+            # hammer an endpoint that doesn't work.
+            ROSTER_CACHE[cache_key] = {}
+
+    return ROSTER_CACHE[cache_key].get(player_id)
+
+
+def add_nullable(
+    existing_value,
+    new_value,
+):
     """
     Add two nullable counting stats.
 
     If both values are None, preserve None rather than turning
     an unavailable historical statistic into 0.
     """
+
     if existing_value is None and new_value is None:
         return None
 
     return (existing_value or 0) + (new_value or 0)
 
 
-def merge_skater_stint(stats: SkaterStats, row: dict):
+# ---------------------------------------------------------
+# STINT MERGING
+# ---------------------------------------------------------
+
+
+def merge_skater_stint(
+    stats: SkaterStats,
+    row: dict,
+):
     """
     Merge a second stint with the same team during the same
     season into the already-pending SkaterStats row.
 
     Example:
+
         MTL -> BOS -> MTL
 
     Both Montreal stints become one Montreal season-stat row.
     """
+
     stats.games_played = add_nullable(
         stats.games_played,
         row.get("gamesPlayed"),
@@ -170,24 +277,28 @@ def merge_skater_stint(stats: SkaterStats, row: dict):
         row.get("otGoals"),
     )
 
-    # Recalculate shooting percentage from the combined totals.
+    # Recalculate shooting percentage from combined totals.
     if stats.shots:
         stats.shooting_pctg = stats.goals / stats.shots
     else:
         stats.shooting_pctg = None
 
-    # These cannot be perfectly recombined from the API fields alone.
-    # For this extremely rare multiple-stint-on-same-team case,
-    # leave the first stint's values in place:
+    # These cannot be perfectly recombined from the API
+    # fields alone, so for the rare multiple-stint case
+    # leave the first stint's values:
     #
     #     avg_toi_seconds
     #     faceoff_winning_pctg
 
 
-def merge_goalie_stint(stats: GoalieStats, row: dict):
+def merge_goalie_stint(
+    stats: GoalieStats,
+    row: dict,
+):
     """
     Same idea as merge_skater_stint(), but for goalies.
     """
+
     stats.games_played = add_nullable(
         stats.games_played,
         row.get("gamesPlayed"),
@@ -269,35 +380,42 @@ def merge_goalie_stint(stats: GoalieStats, row: dict):
         stats.goals_against_avg = (
             (stats.goals_against or 0) * 3600 / stats.time_on_ice_seconds
         )
+
     else:
         stats.goals_against_avg = None
 
 
-def ingest_player_stats(player_id: int):
+# ---------------------------------------------------------
+# PLAYER INGESTION
+# ---------------------------------------------------------
+
+
+def ingest_player_stats(
+    player_id: int,
+):
     client = NHLClient()
     db = SessionLocal()
 
     try:
-        player = db.get(Player, player_id)
+        player = db.get(
+            Player,
+            player_id,
+        )
 
         if player is None:
             print(f"Player {player_id} does not exist " f"in players table")
+
             return
 
         data = client.stats.player_career_stats(player_id)
 
-        season_totals = data.get("seasonTotals", [])
+        season_totals = data.get(
+            "seasonTotals",
+            [],
+        )
 
-        # ---------------------------------------------------------
-        # These dictionaries solve the same-team-twice problem.
-        #
-        # Because SessionLocal has autoflush=False, SQLAlchemy may
-        # not see a row we db.add() earlier in this transaction if
-        # we query for it again.
-        #
-        # Therefore we keep track of pending rows ourselves.
-        # ---------------------------------------------------------
-
+        # These dictionaries solve the same-team-twice
+        # problem within one player's API response.
         pending_skater_stats = {}
         pending_goalie_stats = {}
 
@@ -320,23 +438,30 @@ def ingest_player_stats(player_id: int):
             if game_type_id not in (2, 3):
                 continue
 
-            # -----------------------------------------------------
+            # -------------------------------------------------
             # SEASON
-            # -----------------------------------------------------
+            # -------------------------------------------------
 
-            season = db.get(Season, season_id)
+            season = db.get(
+                Season,
+                season_id,
+            )
 
             if season is None:
                 print(
-                    f"WARNING: Season {season_id} not found " f"for player {player_id}"
+                    f"WARNING: Season {season_id} " f"not found for player {player_id}"
                 )
+
                 continue
 
-            # -----------------------------------------------------
+            # -------------------------------------------------
             # TEAM
-            # -----------------------------------------------------
+            # -------------------------------------------------
 
-            api_team_name = row.get("teamName", {}).get("default")
+            api_team_name = row.get(
+                "teamName",
+                {},
+            ).get("default")
 
             if not api_team_name:
                 print(
@@ -344,6 +469,7 @@ def ingest_player_stats(player_id: int):
                     f"player {player_id}, "
                     f"season {season_id}"
                 )
+
                 continue
 
             team = find_team(
@@ -355,9 +481,9 @@ def ingest_player_stats(player_id: int):
             if team is None:
                 continue
 
-            # -----------------------------------------------------
+            # -------------------------------------------------
             # ROSTER
-            # -----------------------------------------------------
+            # -------------------------------------------------
 
             roster_key = (
                 player.id,
@@ -366,7 +492,6 @@ def ingest_player_stats(player_id: int):
             )
 
             if roster_key not in seen_roster_keys:
-
                 existing_roster = (
                     db.query(Roster)
                     .filter(
@@ -377,22 +502,35 @@ def ingest_player_stats(player_id: int):
                     .first()
                 )
 
+                sweater_number = get_sweater_number(
+                    client=client,
+                    team=team,
+                    season_id=season_id,
+                    player_id=player.id,
+                )
+
                 if existing_roster is None:
                     roster = Roster(
                         player_id=player.id,
                         team_id=team.id,
                         season_id=season_id,
-                        sweater_number=None,
-                        position_code=player.position_code,
+                        sweater_number=(sweater_number),
+                        position_code=(player.position_code),
                     )
 
                     db.add(roster)
 
+                elif (
+                    existing_roster.sweater_number is None
+                    and sweater_number is not None
+                ):
+                    existing_roster.sweater_number = sweater_number
+
                 seen_roster_keys.add(roster_key)
 
-            # -----------------------------------------------------
+            # -------------------------------------------------
             # STAT KEY
-            # -----------------------------------------------------
+            # -------------------------------------------------
 
             stat_key = (
                 player.id,
@@ -401,27 +539,22 @@ def ingest_player_stats(player_id: int):
                 game_type_id,
             )
 
-            # -----------------------------------------------------
+            # -------------------------------------------------
             # GOALIE
-            # -----------------------------------------------------
+            # -------------------------------------------------
 
             if player.position_code == "G":
 
-                # ---------------------------------------------
-                # Duplicate within this player's API response
-                # ---------------------------------------------
-
+                # Duplicate within this player's API response.
                 if stat_key in pending_goalie_stats:
                     merge_goalie_stint(
                         pending_goalie_stats[stat_key],
                         row,
                     )
+
                     continue
 
-                # ---------------------------------------------
-                # Existing row from an earlier script run
-                # ---------------------------------------------
-
+                # Existing row from an earlier completed run.
                 existing = (
                     db.query(GoalieStats)
                     .filter(
@@ -434,9 +567,8 @@ def ingest_player_stats(player_id: int):
                 )
 
                 if existing is not None:
-                    # The row already exists from a completed
-                    # previous ingestion run. Leave it alone.
                     pending_goalie_stats[stat_key] = existing
+
                     continue
 
                 goalie_stats = GoalieStats(
@@ -455,7 +587,7 @@ def ingest_player_stats(player_id: int):
                     goals_against_avg=row.get("goalsAgainstAvg"),
                     save_pctg=row.get("savePctg"),
                     shutouts=row.get("shutouts"),
-                    time_on_ice_seconds=toi_to_seconds(row.get("timeOnIce")),
+                    time_on_ice_seconds=(toi_to_seconds(row.get("timeOnIce"))),
                     goals=row.get("goals"),
                     assists=row.get("assists"),
                     pim=row.get("pim"),
@@ -465,30 +597,27 @@ def ingest_player_stats(player_id: int):
 
                 pending_goalie_stats[stat_key] = goalie_stats
 
-            # -----------------------------------------------------
+            # -------------------------------------------------
             # SKATER
-            # -----------------------------------------------------
+            # -------------------------------------------------
 
             else:
 
-                # ---------------------------------------------
-                # Duplicate within this player's API response
+                # Duplicate within this player's API response.
                 #
-                # e.g. George Carroll:
-                # MTL -> BOS -> MTL
-                # ---------------------------------------------
-
+                # Example:
+                #
+                #     MTL -> BOS -> MTL
+                #
                 if stat_key in pending_skater_stats:
                     merge_skater_stint(
                         pending_skater_stats[stat_key],
                         row,
                     )
+
                     continue
 
-                # ---------------------------------------------
-                # Existing row from an earlier script run
-                # ---------------------------------------------
-
+                # Existing row from an earlier completed run.
                 existing = (
                     db.query(SkaterStats)
                     .filter(
@@ -518,8 +647,8 @@ def ingest_player_stats(player_id: int):
                     pim=row.get("pim"),
                     shots=row.get("shots"),
                     shooting_pctg=row.get("shootingPctg"),
-                    avg_toi_seconds=toi_to_seconds(row.get("avgToi")),
-                    faceoff_winning_pctg=row.get("faceoffWinningPctg"),
+                    avg_toi_seconds=(toi_to_seconds(row.get("avgToi"))),
+                    faceoff_winning_pctg=(row.get("faceoffWinningPctg")),
                     power_play_goals=row.get("powerPlayGoals"),
                     power_play_points=row.get("powerPlayPoints"),
                     shorthanded_goals=row.get("shorthandedGoals"),
@@ -549,6 +678,11 @@ def ingest_player_stats(player_id: int):
         db.close()
 
 
+# ---------------------------------------------------------
+# MAIN
+# ---------------------------------------------------------
+
+
 if __name__ == "__main__":
     db = SessionLocal()
 
@@ -571,4 +705,5 @@ if __name__ == "__main__":
 
         except Exception as e:
             print(f"Failed for player " f"{player_id}: {e}")
+
             continue
