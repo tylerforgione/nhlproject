@@ -27,6 +27,7 @@ from app.models.game_result import GameResult
 from app.models.skater_game_stats import SkaterGameStats
 from app.models.goalie_game_stats import GoalieGameStats
 from app.models.game_event import GameEvent
+from app.models.shift import Shift
 
 config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
 
