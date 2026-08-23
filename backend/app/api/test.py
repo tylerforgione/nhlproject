@@ -1,89 +1,111 @@
-import json
 from collections import defaultdict
+from pprint import pprint
 
 from nhlpy import NHLClient
 
-GAME_ID = 2025030173
-
-client = NHLClient()
-
-# path -> set of observed Python/JSON types
-observed_types = defaultdict(set)
-
-
-def type_name(value):
-    if value is None:
-        return "null"
-
-    if isinstance(value, bool):
-        return "boolean"
-
-    if isinstance(value, int):
-        return "integer"
-
-    if isinstance(value, float):
-        return "float"
-
-    if isinstance(value, str):
-        return "string"
-
-    if isinstance(value, list):
-        return "array"
-
-    if isinstance(value, dict):
-        return "object"
-
-    return type(value).__name__
+PROBLEM_CASES = [
+    {
+        "game_id": 2014020327,
+        "player_id": 8471418,
+        "period": 3,
+        "start_time": "04:23",  # 263 seconds
+    },
+    {
+        "game_id": 2014020414,
+        "player_id": 8468498,
+        "period": 1,
+        "start_time": "00:00",
+    },
+]
 
 
-def inspect_json(value, path="root"):
-    """
-    Recursively inspect every value in the JSON response.
+def time_to_seconds(value: str | None):
+    if not value:
+        return None
 
-    Array indexes are represented with [] so:
-
-        plays[0].details.shootingPlayerId
-        plays[1].details.shootingPlayerId
-
-    both become:
-
-        root.plays[].details.shootingPlayerId
-    """
-
-    observed_types[path].add(type_name(value))
-
-    if isinstance(value, dict):
-        for key, child_value in value.items():
-            child_path = f"{path}.{key}"
-
-            inspect_json(
-                child_value,
-                child_path,
-            )
-
-    elif isinstance(value, list):
-        for item in value:
-            child_path = f"{path}[]"
-
-            inspect_json(
-                item,
-                child_path,
-            )
+    minutes, seconds = value.split(":")
+    return int(minutes) * 60 + int(seconds)
 
 
 def main():
-    pbp = client.game_center.play_by_play(GAME_ID)
+    client = NHLClient()
 
-    inspect_json(pbp)
+    for case in PROBLEM_CASES:
+        game_id = case["game_id"]
+        player_id = case["player_id"]
+        period = case["period"]
+        start_time = case["start_time"]
+        start_seconds = time_to_seconds(start_time)
 
-    print(f"\nPLAY-BY-PLAY SCHEMA FOR GAME {GAME_ID}")
+        print()
+        print("=" * 100)
+        print(
+            f"GAME {game_id} | "
+            f"PLAYER {player_id} | "
+            f"PERIOD {period} | "
+            f"START {start_time}"
+        )
+        print("=" * 100)
 
-    print("=" * 100)
+        data = client.game_center.shift_chart_data(str(game_id))
 
-    for path in sorted(observed_types):
-        types = ", ".join(sorted(observed_types[path]))
+        rows = data.get("data", [])
 
-        print(f"{path:<80} {types}")
+        matches = []
+
+        for row in rows:
+            if row.get("typeCode") != 517:
+                continue
+
+            if row.get("playerId") != player_id:
+                continue
+
+            if row.get("period") != period:
+                continue
+
+            if time_to_seconds(row.get("startTime")) != start_seconds:
+                continue
+
+            matches.append(row)
+
+        print(f"Found {len(matches)} matching shift rows.\n")
+
+        for i, row in enumerate(matches, start=1):
+            print(f"SHIFT {i}")
+            pprint(row, sort_dicts=False)
+            print()
+
+        if len(matches) < 2:
+            print("No duplicate pair found.")
+            continue
+
+        print("-" * 100)
+        print("FIELD-BY-FIELD COMPARISON")
+        print("-" * 100)
+
+        all_keys = sorted(set().union(*(row.keys() for row in matches)))
+
+        for key in all_keys:
+            values = [row.get(key) for row in matches]
+
+            same = all(value == values[0] for value in values)
+
+            marker = "SAME" if same else "DIFFERENT"
+
+            print(f"{marker:10} " f"{key:25} " f"{values}")
+
+        # Compare while intentionally ignoring NHL row ID.
+        without_id = []
+
+        for row in matches:
+            normalized = {key: value for key, value in row.items() if key != "id"}
+
+            without_id.append(normalized)
+
+        identical_except_id = all(row == without_id[0] for row in without_id)
+
+        print()
+        print("IDENTICAL EXCEPT FOR ID: " f"{identical_except_id}")
 
 
 if __name__ == "__main__":
