@@ -33,3 +33,9 @@ dist/
 
 # Database
 *.sqlite3
+
+# Local agent context and planning
+**/.codex/
+/AGENTS.md
+/CONTEXT-MAP.md
+/docs/agents/
