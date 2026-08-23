@@ -1,0 +1,12 @@
+.scores-state {
+  display: grid;
+  place-items: center;
+  min-height: 20rem;
+  max-width: 86rem;
+  margin: 0 auto;
+  border: 1px solid var(--border-strong);
+  border-radius: 0.75rem;
+  color: var(--text-secondary);
+  background: var(--surface);
+  text-align: center;
+}

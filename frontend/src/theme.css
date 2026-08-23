@@ -1,0 +1,55 @@
+:root[data-theme='light'] {
+  --page-bg: #f2f4f7;
+  --surface: #ffffff;
+  --surface-muted: #e8edf3;
+  --text-primary: #111827;
+  --text-secondary: #536173;
+  --border-strong: #c9d2dd;
+  --brand: #123b66;
+}
+
+:root[data-theme='dark'] {
+  --page-bg: #0d1520;
+  --surface: #162231;
+  --surface-muted: #202f40;
+  --text-primary: #f4f7fb;
+  --text-secondary: #aebccd;
+  --border-strong: #33465c;
+  --brand: #081e36;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.theme-toggle,
+.scores-state button {
+  border: 1px solid rgb(255 255 255 / 45%);
+  border-radius: 0.4rem;
+  color: var(--brand-contrast);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  padding: 0.45rem 0.7rem;
+}
+
+.scores-state button {
+  margin-top: 1rem;
+  color: var(--brand-contrast);
+  background: var(--brand);
+}
+
+.theme-toggle:focus-visible,
+.scores-state button:focus-visible {
+  outline: 3px solid #f9c74f;
+  outline-offset: 3px;
+}
+
+@media (max-width: 36rem) {
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
