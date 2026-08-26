@@ -52,6 +52,13 @@ def test_games_by_official_date_returns_a_scheduled_game(client, db_session):
     assert response.status_code == 200
     assert response.json() == {
         "official_date": "2026-01-15",
+        "season_id": None,
+        "game_type": None,
+        "freshness": {
+            "state": "unknown",
+            "updated_at": None,
+            "explanation": "Schedule freshness has not been verified.",
+        },
         "capability": {
             "state": "unknown",
             "explanation": "Schedule coverage has not been verified.",
@@ -118,3 +125,61 @@ def test_games_by_official_date_preserves_an_unknown_upstream_state(
 
     assert response.status_code == 200
     assert response.json()["games"][0]["state"] == "unknown"
+
+
+def test_games_by_official_date_applies_season_and_game_type_reference_state(
+    client, db_session
+):
+    official_date = date(2026, 5, 15)
+    seasons = [
+        Season(
+            id=20242025,
+            standings_start=date(2024, 10, 4),
+            standings_end=date(2025, 4, 17),
+        ),
+        Season(
+            id=20252026,
+            standings_start=date(2025, 10, 7),
+            standings_end=date(2026, 4, 16),
+        ),
+    ]
+    away_team = Team(id=1, name="Boston Bruins", abbrev="BOS", is_nhl=True)
+    home_team = Team(id=2, name="New York Rangers", abbrev="NYR", is_nhl=True)
+    games = [
+        Game(
+            id=2024030111,
+            season_id=20242025,
+            game_type_id=3,
+            game_date=official_date,
+            home_team_id=home_team.id,
+            away_team_id=away_team.id,
+            neutral_site=False,
+            game_state="FINAL",
+        ),
+        Game(
+            id=2025030111,
+            season_id=20252026,
+            game_type_id=3,
+            game_date=official_date,
+            home_team_id=home_team.id,
+            away_team_id=away_team.id,
+            neutral_site=False,
+            game_state="LIVE",
+        ),
+    ]
+    db_session.add_all([*seasons, away_team, home_team, *games])
+    db_session.commit()
+
+    response = client.get(
+        "/api/v1/games",
+        params={
+            "official_date": official_date.isoformat(),
+            "season_id": 20252026,
+            "game_type": "playoffs",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["season_id"] == 20252026
+    assert response.json()["game_type"] == "playoffs"
+    assert [game["id"] for game in response.json()["games"]] == [2025030111]

@@ -3,7 +3,8 @@ from datetime import date, datetime
 from pydantic import BaseModel
 
 from app.domain.games import GameState, GameType
-from app.schemas.common import Capability
+from app.schemas.common import Capability, Freshness
+
 
 class TeamReference(BaseModel):
     id: int
@@ -32,4 +33,7 @@ class GameSummary(BaseModel):
 class GamesByDateResponse(BaseModel):
     official_date: date
     capability: Capability
+    season_id: int | None
+    game_type: GameType | None
+    freshness: Freshness
     games: list[GameSummary]

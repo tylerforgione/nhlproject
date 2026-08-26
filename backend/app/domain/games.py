@@ -29,6 +29,14 @@ def game_type_from_id(game_type_id: int) -> GameType:
     }.get(game_type_id, GameType.UNKNOWN)
 
 
+def game_type_id_from_type(game_type: GameType) -> GameTypeId | None:
+    return {
+        GameType.PRESEASON: GameTypeId.PRESEASON,
+        GameType.REGULAR_SEASON: GameTypeId.REGULAR_SEASON,
+        GameType.PLAYOFFS: GameTypeId.PLAYOFFS,
+    }.get(game_type)
+
+
 def game_state_from_code(game_state: str | None) -> GameState:
     if game_state in {"OFF", "FINAL"}:
         return GameState.FINAL

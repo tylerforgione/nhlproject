@@ -3,7 +3,13 @@ from datetime import date, timezone
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.domain.games import game_state_from_code, game_type_from_id
+from app.domain.games import (
+    GameType,
+    GameTypeId,
+    game_state_from_code,
+    game_type_from_id,
+    game_type_id_from_type,
+)
 from app.models.game import Game
 from app.models.game_result import GameResult
 from app.models.team import Team
@@ -12,7 +18,10 @@ from app.schemas.games import (
     GamesByDateResponse,
     TeamReference,
 )
-from app.services.capabilities import unverified_schedule_capability
+from app.services.capabilities import (
+    unverified_schedule_capability,
+    unverified_schedule_freshness,
+)
 
 
 def _team_reference(team: Team) -> TeamReference:
@@ -26,12 +35,26 @@ def _team_reference(team: Team) -> TeamReference:
 
 
 def list_games_by_official_date(
-    db: Session, official_date: date
+    db: Session,
+    official_date: date,
+    season_id: int | None = None,
+    game_type: GameType | None = None,
 ) -> GamesByDateResponse:
+    games_query = select(Game).where(Game.game_date == official_date)
+
+    if season_id is not None:
+        games_query = games_query.where(Game.season_id == season_id)
+
+    if game_type is not None:
+        game_type_id = game_type_id_from_type(game_type)
+        games_query = games_query.where(
+            Game.game_type_id == game_type_id
+            if game_type_id is not None
+            else Game.game_type_id.not_in([int(value) for value in GameTypeId])
+        )
+
     games = db.scalars(
-        select(Game)
-        .where(Game.game_date == official_date)
-        .order_by(Game.start_time_utc.asc(), Game.id.asc())
+        games_query.order_by(Game.start_time_utc.asc(), Game.id.asc())
     ).all()
     summaries = []
 
@@ -64,6 +87,9 @@ def list_games_by_official_date(
 
     return GamesByDateResponse(
         official_date=official_date,
+        season_id=season_id,
+        game_type=game_type,
         capability=unverified_schedule_capability(),
+        freshness=unverified_schedule_freshness(),
         games=summaries,
     )
