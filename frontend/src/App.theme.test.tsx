@@ -32,9 +32,12 @@ it('persists a manual theme override over the system preference', async () => {
   )
 
   expect(document.documentElement).toHaveAttribute('data-theme', 'dark')
-  await user.click(screen.getByRole('button', { name: 'Theme: system' }))
+  const themeSwitch = screen.getByRole('switch', { name: 'Dark mode' })
+  expect(themeSwitch).toBeChecked()
+  await user.click(themeSwitch)
   expect(document.documentElement).toHaveAttribute('data-theme', 'light')
   expect(localStorage.getItem('hockey-stat-pack-theme')).toBe('light')
+  expect(themeSwitch).not.toBeChecked()
 
   firstRender.unmount()
   render(
@@ -44,5 +47,5 @@ it('persists a manual theme override over the system preference', async () => {
   )
 
   expect(document.documentElement).toHaveAttribute('data-theme', 'light')
-  expect(screen.getByRole('button', { name: 'Theme: light' })).toBeInTheDocument()
+  expect(screen.getByRole('switch', { name: 'Dark mode' })).not.toBeChecked()
 })

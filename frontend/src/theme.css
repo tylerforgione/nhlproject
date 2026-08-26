@@ -24,7 +24,6 @@
   gap: 0.75rem;
 }
 
-.theme-toggle,
 .scores-state button {
   border: 1px solid rgb(255 255 255 / 45%);
   border-radius: 0.4rem;
@@ -41,8 +40,60 @@
   background: var(--brand);
 }
 
-.theme-toggle:focus-visible,
 .scores-state button:focus-visible {
+  outline: 3px solid #f9c74f;
+  outline-offset: 3px;
+}
+
+.theme-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--brand-contrast);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 650;
+  line-height: 1;
+}
+
+.theme-switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.theme-switch-track {
+  position: relative;
+  width: 2rem;
+  height: 1.1rem;
+  border: 1px solid rgb(255 255 255 / 60%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 20%);
+  transition: background 160ms ease;
+}
+
+.theme-switch-thumb {
+  position: absolute;
+  top: 0.12rem;
+  left: 0.14rem;
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 50%;
+  background: var(--brand-contrast);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 35%);
+  transition: transform 160ms ease;
+}
+
+.theme-switch input:checked + .theme-switch-track {
+  background: #3b82f6;
+}
+
+.theme-switch input:checked + .theme-switch-track .theme-switch-thumb {
+  transform: translateX(0.86rem);
+}
+
+.theme-switch input:focus-visible + .theme-switch-track {
   outline: 3px solid #f9c74f;
   outline-offset: 3px;
 }

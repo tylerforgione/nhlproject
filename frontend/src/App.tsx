@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { NavLink, Route, Routes } from 'react-router-dom'
+import { Link, NavLink, Route, Routes } from 'react-router-dom'
 
 import './product.css'
 import './coverage.css'
@@ -57,12 +57,48 @@ function Team({ game, side }: { game: GameSummary; side: 'away' | 'home' }) {
   )
 }
 
+function GameCard({
+  game,
+  linkToGames,
+}: {
+  game: GameSummary
+  linkToGames: boolean
+}) {
+  const card = (
+    <article className="game-card">
+      <div className="game-meta">
+        <span>{formatStartTime(game.start_time_utc)}</span>
+        <span className={`game-state game-state-${game.state}`}>
+          {formatStatus(game)}
+        </span>
+      </div>
+      <Team game={game} side="away" />
+      <Team game={game} side="home" />
+      {game.venue && <p className="venue">{game.venue}</p>}
+    </article>
+  )
+
+  if (!linkToGames) return card
+
+  return (
+    <Link
+      className="game-card-link"
+      to="/games"
+      aria-label={`View ${game.away_team.name} at ${game.home_team.name} in Games`}
+    >
+      {card}
+    </Link>
+  )
+}
+
 function ScoresModule({
   data,
   headingLevel = 1,
+  linkToGames = false,
 }: {
   data: HomeData
   headingLevel?: 1 | 2
+  linkToGames?: boolean
 }) {
   return (
     <section className="scores-section" aria-labelledby="todays-games-heading">
@@ -84,35 +120,32 @@ function ScoresModule({
           }).format(new Date(`${data.schedule.official_date}T12:00:00Z`))}
         </time>
       </div>
-      {data.schedule.capability.state !== 'available' &&
-        data.schedule.capability.explanation && (
-          <p className="coverage-notice">
-            {data.schedule.capability.explanation}
-          </p>
+      <div className="scores-content">
+        {data.schedule.capability.state !== 'available' &&
+          data.schedule.capability.explanation && (
+            <p className="coverage-notice">
+              {data.schedule.capability.explanation}
+            </p>
+          )}
+        {data.schedule.games.length === 0 ? (
+          <div className="scores-state">
+            <p role="status">
+              No NHL games are scheduled for this official date.
+            </p>
+          </div>
+        ) : (
+          <div
+            className="scores-scroll"
+            role="region"
+            tabIndex={0}
+            aria-label="Today's NHL games"
+          >
+            {data.schedule.games.map((game) => (
+              <GameCard game={game} key={game.id} linkToGames={linkToGames} />
+            ))}
+          </div>
         )}
-      {data.schedule.games.length === 0 ? (
-        <div className="scores-state">
-          <p role="status">
-            No NHL games are scheduled for this official date.
-          </p>
-        </div>
-      ) : (
-        <div className="scores-scroll" tabIndex={0} aria-label="Today's NHL games">
-          {data.schedule.games.map((game) => (
-            <article className="game-card" key={game.id}>
-              <div className="game-meta">
-                <span>{formatStartTime(game.start_time_utc)}</span>
-                <span className={`game-state game-state-${game.state}`}>
-                  {formatStatus(game)}
-                </span>
-              </div>
-              <Team game={game} side="away" />
-              <Team game={game} side="home" />
-              {game.venue && <p className="venue">{game.venue}</p>}
-            </article>
-          ))}
-        </div>
-      )}
+      </div>
     </section>
   )
 }
@@ -178,15 +211,19 @@ function CurrentGamesPage({ isGamesPage = false }: { isGamesPage?: boolean }) {
   }
 
   return (
-    <main className="page-content">
+    <main className={`page-content ${isGamesPage ? 'games-page' : 'home-page'}`}>
       {isGamesPage && <h1 className="page-title">Games</h1>}
-      <ScoresModule data={data} headingLevel={isGamesPage ? 2 : 1} />
+      <ScoresModule
+        data={data}
+        headingLevel={isGamesPage ? 2 : 1}
+        linkToGames={!isGamesPage}
+      />
     </main>
   )
 }
 
 function App() {
-  const { preference, cycleTheme } = useTheme()
+  const { resolvedTheme, toggleTheme } = useTheme()
 
   return (
     <div className="app-shell">
@@ -200,14 +237,18 @@ function App() {
             <NavLink to="/">Home</NavLink>
             <NavLink to="/games">Games</NavLink>
           </nav>
-          <button
-            className="theme-toggle"
-            type="button"
-            aria-label={"Theme: " + preference}
-            onClick={cycleTheme}
-          >
-            Theme
-          </button>
+          <label className="theme-switch">
+            <span className="theme-switch-label">Dark mode</span>
+            <input
+              type="checkbox"
+              role="switch"
+              checked={resolvedTheme === 'dark'}
+              onChange={toggleTheme}
+            />
+            <span className="theme-switch-track" aria-hidden="true">
+              <span className="theme-switch-thumb" />
+            </span>
+          </label>
         </div>
       </header>
       <Routes>

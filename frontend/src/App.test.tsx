@@ -76,6 +76,16 @@ it('shows todays scheduled games through the Home route', async () => {
   expect(
     await screen.findByRole('heading', { name: "Today's games" }),
   ).toBeInTheDocument()
+  const scoresBanner = screen.getByRole('region', { name: "Today's games" })
+  expect(screen.getByRole('main').firstElementChild).toBe(scoresBanner)
+  expect(
+    within(scoresBanner).getByRole('region', { name: "Today's NHL games" }),
+  ).toHaveAttribute('tabindex', '0')
+  expect(
+    within(scoresBanner).getByRole('link', {
+      name: 'View Boston Bruins at New York Rangers in Games',
+    }),
+  ).toHaveAttribute('href', '/games')
   expect(screen.getByText('Boston Bruins')).toBeInTheDocument()
   expect(screen.getByText('New York Rangers')).toBeInTheDocument()
   expect(screen.getByText('7:30 PM EST')).toBeInTheDocument()
