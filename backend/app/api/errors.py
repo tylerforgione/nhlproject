@@ -24,3 +24,16 @@ async def validation_error_handler(
             }
         },
     )
+
+
+async def unexpected_error_handler(request: Request, exc: Exception) -> JSONResponse:
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": {
+                "code": "internal_server_error",
+                "message": "The request could not be completed",
+                "details": [],
+            }
+        },
+    )

@@ -6,6 +6,7 @@
   --text-secondary: #536173;
   --border-strong: #c9d2dd;
   --brand: #123b66;
+  --accent-text: #123b66;
   --brand-contrast: #ffffff;
   --live: #b42318;
   color: var(--text-primary);
@@ -203,7 +204,7 @@ body {
   width: 2.15rem;
   height: 1.5rem;
   border-radius: 0.35rem;
-  color: var(--brand);
+  color: var(--accent-text);
   background: var(--surface-muted);
   font-size: 0.75rem;
   font-weight: 800;
@@ -250,6 +251,7 @@ body {
     --text-secondary: #aebccd;
     --border-strong: #33465c;
     --brand: #081e36;
+    --accent-text: #9cc9f5;
   }
 }
 

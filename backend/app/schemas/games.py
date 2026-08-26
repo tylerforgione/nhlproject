@@ -1,23 +1,9 @@
 from datetime import date, datetime
-from enum import Enum
 
 from pydantic import BaseModel
 
+from app.domain.games import GameState, GameType
 from app.schemas.common import Capability
-
-
-class GameType(str, Enum):
-    PRESEASON = "preseason"
-    REGULAR_SEASON = "regular-season"
-    PLAYOFFS = "playoffs"
-
-
-class GameState(str, Enum):
-    SCHEDULED = "scheduled"
-    LIVE = "live"
-    FINAL = "final"
-    UNKNOWN = "unknown"
-
 
 class TeamReference(BaseModel):
     id: int

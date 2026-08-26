@@ -6,6 +6,7 @@
   --text-secondary: #536173;
   --border-strong: #c9d2dd;
   --brand: #123b66;
+  --accent-text: #123b66;
 }
 
 :root[data-theme='dark'] {
@@ -16,6 +17,7 @@
   --text-secondary: #aebccd;
   --border-strong: #33465c;
   --brand: #081e36;
+  --accent-text: #9cc9f5;
 }
 
 .header-actions {

@@ -42,7 +42,7 @@ def test_current_context_returns_the_active_regular_season(client, db_session):
         "schedule_season_id": 20252026,
         "latest_completed_season_id": 20242025,
         "games_capability": {
-            "state": "available",
-            "explanation": None,
+            "state": "unknown",
+            "explanation": "Schedule coverage has not been verified.",
         },
     }

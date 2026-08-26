@@ -1,6 +1,10 @@
 import type { Capability } from './types'
 
-export type GameType = 'preseason' | 'regular-season' | 'playoffs'
+export type GameType =
+  | 'preseason'
+  | 'regular-season'
+  | 'playoffs'
+  | 'unknown'
 export type GameState = 'scheduled' | 'live' | 'final' | 'unknown'
 
 export interface TeamReference {

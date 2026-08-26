@@ -35,8 +35,11 @@ export function RouteMetadata() {
       document.head.append(canonical)
     }
 
-    canonical.href = new URL(location.pathname, window.location.origin).href
-  }, [location.pathname])
+    canonical.href = new URL(
+      `${location.pathname}${location.search}`,
+      window.location.origin,
+    ).href
+  }, [location.pathname, location.search])
 
   return null
 }

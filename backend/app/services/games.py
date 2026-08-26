@@ -3,17 +3,16 @@ from datetime import date, timezone
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.domain.games import game_state_from_code, game_type_from_id
 from app.models.game import Game
 from app.models.game_result import GameResult
 from app.models.team import Team
-from app.schemas.common import Capability, CapabilityState
 from app.schemas.games import (
-    GameState,
     GameSummary,
     GamesByDateResponse,
-    GameType,
     TeamReference,
 )
+from app.services.capabilities import unverified_schedule_capability
 
 
 def _team_reference(team: Team) -> TeamReference:
@@ -49,20 +48,8 @@ def list_games_by_official_date(
             GameSummary(
                 id=game.id,
                 season_id=game.season_id,
-                game_type=(
-                    GameType.PLAYOFFS
-                    if game.game_type_id == 3
-                    else GameType.PRESEASON
-                    if game.game_type_id == 1
-                    else GameType.REGULAR_SEASON
-                ),
-                state=(
-                    GameState.FINAL
-                    if game.game_state in {"OFF", "FINAL"}
-                    else GameState.LIVE
-                    if game.game_state == "LIVE"
-                    else GameState.SCHEDULED
-                ),
+                game_type=game_type_from_id(game.game_type_id),
+                state=game_state_from_code(game.game_state),
                 official_date=game.game_date,
                 start_time_utc=start_time_utc,
                 away_team=_team_reference(away_team),
@@ -77,9 +64,6 @@ def list_games_by_official_date(
 
     return GamesByDateResponse(
         official_date=official_date,
-        capability=Capability(
-            state=CapabilityState.AVAILABLE,
-            explanation=None,
-        ),
+        capability=unverified_schedule_capability(),
         games=summaries,
     )

@@ -29,7 +29,7 @@ def test_current_context_uses_the_upcoming_schedule_season_in_the_offseason(
         "schedule_season_id": 20262027,
         "latest_completed_season_id": 20252026,
         "games_capability": {
-            "state": "available",
-            "explanation": None,
+            "state": "unknown",
+            "explanation": "Schedule coverage has not been verified.",
         },
     }

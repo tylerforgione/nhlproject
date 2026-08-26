@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { expect, it, vi } from 'vitest'
+import { beforeEach, expect, it, vi } from 'vitest'
 
 import App from './App'
 import { getGamesByOfficialDate } from './api/games'
@@ -8,6 +8,11 @@ import { getCurrentContext } from './api/home'
 
 vi.mock('./api/home', () => ({ getCurrentContext: vi.fn() }))
 vi.mock('./api/games', () => ({ getGamesByOfficialDate: vi.fn() }))
+
+beforeEach(() => {
+  vi.mocked(getCurrentContext).mockReset()
+  vi.mocked(getGamesByOfficialDate).mockReset()
+})
 
 it('supports direct loading of the working Games destination', async () => {
   vi.mocked(getCurrentContext).mockResolvedValue({
@@ -39,4 +44,26 @@ it('supports direct loading of the working Games destination', async () => {
     'aria-current',
     'page',
   )
+})
+
+it('restores official date state from a direct Games URL', async () => {
+  vi.mocked(getGamesByOfficialDate).mockResolvedValue({
+    official_date: '2026-01-14',
+    capability: { state: 'unknown', explanation: 'Coverage is unverified.' },
+    games: [],
+  })
+
+  render(
+    <MemoryRouter
+      initialEntries={[
+        '/games?date=2026-01-14&season=20252026&gameType=regular-season',
+      ]}
+    >
+      <App />
+    </MemoryRouter>,
+  )
+
+  expect(await screen.findByText('January 14, 2026')).toBeInTheDocument()
+  expect(getGamesByOfficialDate).toHaveBeenCalledWith('2026-01-14')
+  expect(getCurrentContext).not.toHaveBeenCalled()
 })

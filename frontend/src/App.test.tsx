@@ -85,7 +85,10 @@ it('shows todays scheduled games through the Home route', async () => {
     within(scoresBanner).getByRole('link', {
       name: 'View Boston Bruins at New York Rangers in Games',
     }),
-  ).toHaveAttribute('href', '/games')
+  ).toHaveAttribute(
+    'href',
+    '/games?date=2026-01-15&season=20252026&gameType=regular-season',
+  )
   expect(screen.getByText('Boston Bruins')).toBeInTheDocument()
   expect(screen.getByText('New York Rangers')).toBeInTheDocument()
   expect(screen.getByText('7:30 PM EST')).toBeInTheDocument()
