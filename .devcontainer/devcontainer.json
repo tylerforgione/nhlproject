@@ -3,7 +3,10 @@
   "dockerComposeFile": "../docker-compose.yml",
   "service": "backend",
   "workspaceFolder": "/workspace",
-  "mounts": ["source=codex-config,target=/root/.codex,type=volume"],
+  "mounts": [
+    "source=codex-config,target=/root/.codex,type=volume",
+    "source=agent-skills,target=/root/.agents,type=volume"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
