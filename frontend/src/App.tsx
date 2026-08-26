@@ -246,7 +246,9 @@ function App() {
               onChange={toggleTheme}
             />
             <span className="theme-switch-track" aria-hidden="true">
-              <span className="theme-switch-thumb" />
+              <span className="theme-switch-thumb">
+                {resolvedTheme === 'dark' ? '☀' : '☾'}
+              </span>
             </span>
           </label>
         </div>

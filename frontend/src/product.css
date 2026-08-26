@@ -83,6 +83,7 @@ body {
 }
 
 .page-title {
+  color: var(--text-primary);
   margin: 0;
   padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 4rem);
 }
@@ -107,6 +108,7 @@ body {
 
 .section-heading h1,
 .section-heading h2 {
+  color: var(--text-primary);
   font-size: clamp(1.1rem, 2vw, 1.35rem);
   font-weight: 750;
   letter-spacing: -0.02em;

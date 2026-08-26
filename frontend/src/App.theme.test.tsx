@@ -15,7 +15,7 @@ beforeEach(() => {
   vi.stubGlobal(
     'matchMedia',
     vi.fn().mockReturnValue({
-      matches: true,
+      matches: false,
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
     }),
@@ -31,13 +31,16 @@ it('persists a manual theme override over the system preference', async () => {
     </MemoryRouter>,
   )
 
-  expect(document.documentElement).toHaveAttribute('data-theme', 'dark')
-  const themeSwitch = screen.getByRole('switch', { name: 'Dark mode' })
-  expect(themeSwitch).toBeChecked()
-  await user.click(themeSwitch)
   expect(document.documentElement).toHaveAttribute('data-theme', 'light')
-  expect(localStorage.getItem('hockey-stat-pack-theme')).toBe('light')
+  const themeSwitch = screen.getByRole('switch', { name: 'Dark mode' })
   expect(themeSwitch).not.toBeChecked()
+  expect(screen.getByText('☾')).toBeInTheDocument()
+  await user.click(themeSwitch)
+  expect(document.documentElement).toHaveAttribute('data-theme', 'dark')
+  expect(localStorage.getItem('hockey-stat-pack-theme')).toBe('dark')
+  expect(themeSwitch).toBeChecked()
+  expect(screen.getByText('☀')).toBeInTheDocument()
+  expect(screen.queryByText('☾')).not.toBeInTheDocument()
 
   firstRender.unmount()
   render(
@@ -46,6 +49,7 @@ it('persists a manual theme override over the system preference', async () => {
     </MemoryRouter>,
   )
 
-  expect(document.documentElement).toHaveAttribute('data-theme', 'light')
-  expect(screen.getByRole('switch', { name: 'Dark mode' })).not.toBeChecked()
+  expect(document.documentElement).toHaveAttribute('data-theme', 'dark')
+  expect(screen.getByRole('switch', { name: 'Dark mode' })).toBeChecked()
+  expect(screen.getByText('☀')).toBeInTheDocument()
 })
