@@ -8,7 +8,7 @@
   --brand: #123b66;
   --accent-text: #123b66;
   --brand-contrast: #ffffff;
-  --live: #b42318;
+  --live: #f51d0e;
   color: var(--text-primary);
   background: var(--page-bg);
 }
@@ -63,7 +63,7 @@ body {
   text-decoration: none;
 }
 
-.site-header nav a[aria-current='page'] {
+.site-header nav a[aria-current="page"] {
   background: rgb(255 255 255 / 16%);
 }
 
@@ -161,7 +161,11 @@ body {
 }
 
 .game-card-link:hover .game-card {
-  border-color: color-mix(in srgb, var(--border-strong) 55%, var(--text-primary));
+  border-color: color-mix(
+    in srgb,
+    var(--border-strong) 55%,
+    var(--text-primary)
+  );
   background: var(--surface-muted);
 }
 
