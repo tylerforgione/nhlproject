@@ -8,7 +8,7 @@
   --brand: #123b66;
   --accent-text: #123b66;
   --brand-contrast: #ffffff;
-  --live: #f51d0e;
+  --live: #b42318;
   color: var(--text-primary);
   background: var(--page-bg);
 }
@@ -256,6 +256,7 @@ body {
     --border-strong: #33465c;
     --brand: #081e36;
     --accent-text: #9cc9f5;
+    --live: #ff7b72;
   }
 }
 

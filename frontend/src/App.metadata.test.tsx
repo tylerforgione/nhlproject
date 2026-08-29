@@ -1,21 +1,14 @@
 import { render } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { beforeEach, expect, it, vi } from 'vitest'
+import { beforeEach, expect, it } from 'vitest'
 
+import { appApiMocks, resetAppApiMocks } from './test/appApiMocks'
 import App from './App'
-import { getCurrentContext } from './api/home'
-import { getGamesByOfficialDate } from './api/games'
 
-vi.mock('./api/home', () => ({ getCurrentContext: vi.fn() }))
-vi.mock('./api/games', () => ({ getGamesByOfficialDate: vi.fn() }))
-
-beforeEach(() => {
-  vi.mocked(getCurrentContext).mockReset()
-  vi.mocked(getGamesByOfficialDate).mockReset()
-})
+beforeEach(resetAppApiMocks)
 
 it('publishes meaningful metadata for the canonical Home route', () => {
-  vi.mocked(getCurrentContext).mockReturnValue(new Promise(() => undefined))
+  appApiMocks.getCurrentContext.mockReturnValue(new Promise(() => undefined))
 
   render(
     <MemoryRouter initialEntries={['/']}>
@@ -35,7 +28,7 @@ it('publishes meaningful metadata for the canonical Home route', () => {
 })
 
 it('keeps Games reference state in canonical metadata', () => {
-  vi.mocked(getGamesByOfficialDate).mockReturnValue(new Promise(() => undefined))
+  appApiMocks.getGamesByOfficialDate.mockReturnValue(new Promise(() => undefined))
 
   render(
     <MemoryRouter
@@ -55,5 +48,5 @@ it('keeps Games reference state in canonical metadata', () => {
       window.location.origin,
     ).href,
   )
-  expect(getCurrentContext).not.toHaveBeenCalled()
+  expect(appApiMocks.getCurrentContext).not.toHaveBeenCalled()
 })

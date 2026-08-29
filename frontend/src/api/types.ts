@@ -9,6 +9,14 @@ export interface Capability {
   explanation: string | null
 }
 
+export type FreshnessState = 'fresh' | 'stale' | 'unknown'
+
+export interface Freshness {
+  state: FreshnessState
+  updated_at: string | null
+  explanation: string | null
+}
+
 export type SeasonPhase =
   | 'preseason'
   | 'regular-season'

@@ -1,27 +1,17 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { expect, it, vi } from 'vitest'
+import { expect, it } from 'vitest'
 
+import {
+  appApiMocks,
+  currentContextFixture,
+  gamesResponseFixture,
+} from './test/appApiMocks'
 import App from './App'
-import { getGamesByOfficialDate } from './api/games'
-import { getCurrentContext } from './api/home'
-
-vi.mock('./api/home', () => ({ getCurrentContext: vi.fn() }))
-vi.mock('./api/games', () => ({ getGamesByOfficialDate: vi.fn() }))
 
 it('shows a deliberate empty state for an official date with no games', async () => {
-  vi.mocked(getCurrentContext).mockResolvedValue({
-    official_date: '2026-01-15',
-    active_season_phase: 'regular-season',
-    schedule_season_id: 20252026,
-    latest_completed_season_id: 20242025,
-    games_capability: { state: 'available', explanation: null },
-  })
-  vi.mocked(getGamesByOfficialDate).mockResolvedValue({
-    official_date: '2026-01-15',
-    capability: { state: 'available', explanation: null },
-    games: [],
-  })
+  appApiMocks.getCurrentContext.mockResolvedValue(currentContextFixture())
+  appApiMocks.getGamesByOfficialDate.mockResolvedValue(gamesResponseFixture())
 
   render(
     <MemoryRouter initialEntries={['/']}>

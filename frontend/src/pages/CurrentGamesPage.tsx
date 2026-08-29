@@ -185,7 +185,15 @@ export function CurrentGamesPage({ isGamesPage = false }: CurrentGamesPageProps)
           officialDate = currentContext.official_date
         }
 
-        const schedule = await getGamesByOfficialDate(officialDate)
+        const schedule = await getGamesByOfficialDate(
+          officialDate,
+          reference
+            ? {
+                seasonId: reference.seasonId,
+                gameType: reference.gameType,
+              }
+            : undefined,
+        )
 
         if (active) {
           setData({ context, schedule })

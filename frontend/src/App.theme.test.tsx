@@ -3,11 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, expect, it, vi } from 'vitest'
 
+import { appApiMocks } from './test/appApiMocks'
 import App from './App'
-import { getCurrentContext } from './api/home'
-
-vi.mock('./api/home', () => ({ getCurrentContext: vi.fn() }))
-vi.mock('./api/games', () => ({ getGamesByOfficialDate: vi.fn() }))
 
 beforeEach(() => {
   localStorage.clear()
@@ -20,7 +17,7 @@ beforeEach(() => {
       removeEventListener: vi.fn(),
     }),
   )
-  vi.mocked(getCurrentContext).mockReturnValue(new Promise(() => undefined))
+  appApiMocks.getCurrentContext.mockReturnValue(new Promise(() => undefined))
 })
 
 it('persists a manual theme override over the system preference', async () => {

@@ -1,12 +1,15 @@
 from datetime import date, timedelta
 
+from app.domain.official_date import current_official_date
+from app.main import app
 from app.models.game import Game
 from app.models.season import Season
 from app.models.team import Team
 
 
 def test_current_context_returns_the_active_regular_season(client, db_session):
-    today = date.today()
+    today = date(2026, 1, 15)
+    app.dependency_overrides[current_official_date] = lambda: today
     completed_season = Season(
         id=20242025,
         standings_start=today - timedelta(days=400),

@@ -1,32 +1,20 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { beforeEach, expect, it, vi } from 'vitest'
+import { beforeEach, expect, it } from 'vitest'
 
+import {
+  appApiMocks,
+  currentContextFixture,
+  gamesResponseFixture,
+  resetAppApiMocks,
+} from './test/appApiMocks'
 import App from './App'
-import { getGamesByOfficialDate } from './api/games'
-import { getCurrentContext } from './api/home'
 
-vi.mock('./api/home', () => ({ getCurrentContext: vi.fn() }))
-vi.mock('./api/games', () => ({ getGamesByOfficialDate: vi.fn() }))
-
-beforeEach(() => {
-  vi.mocked(getCurrentContext).mockReset()
-  vi.mocked(getGamesByOfficialDate).mockReset()
-})
+beforeEach(resetAppApiMocks)
 
 it('supports direct loading of the working Games destination', async () => {
-  vi.mocked(getCurrentContext).mockResolvedValue({
-    official_date: '2026-01-15',
-    active_season_phase: 'regular-season',
-    schedule_season_id: 20252026,
-    latest_completed_season_id: 20242025,
-    games_capability: { state: 'available', explanation: null },
-  })
-  vi.mocked(getGamesByOfficialDate).mockResolvedValue({
-    official_date: '2026-01-15',
-    capability: { state: 'available', explanation: null },
-    games: [],
-  })
+  appApiMocks.getCurrentContext.mockResolvedValue(currentContextFixture())
+  appApiMocks.getGamesByOfficialDate.mockResolvedValue(gamesResponseFixture())
 
   render(
     <MemoryRouter initialEntries={['/games']}>
@@ -47,11 +35,13 @@ it('supports direct loading of the working Games destination', async () => {
 })
 
 it('restores official date state from a direct Games URL', async () => {
-  vi.mocked(getGamesByOfficialDate).mockResolvedValue({
-    official_date: '2026-01-14',
-    capability: { state: 'unknown', explanation: 'Coverage is unverified.' },
-    games: [],
-  })
+  appApiMocks.getGamesByOfficialDate.mockResolvedValue(
+    gamesResponseFixture({
+      official_date: '2026-01-14',
+      capability: { state: 'unknown', explanation: 'Coverage is unverified.' },
+      games: [],
+    }),
+  )
 
   render(
     <MemoryRouter
@@ -64,6 +54,12 @@ it('restores official date state from a direct Games URL', async () => {
   )
 
   expect(await screen.findByText('January 14, 2026')).toBeInTheDocument()
-  expect(getGamesByOfficialDate).toHaveBeenCalledWith('2026-01-14')
-  expect(getCurrentContext).not.toHaveBeenCalled()
+  expect(appApiMocks.getGamesByOfficialDate).toHaveBeenCalledWith(
+    '2026-01-14',
+    {
+      seasonId: 20252026,
+      gameType: 'regular-season',
+    },
+  )
+  expect(appApiMocks.getCurrentContext).not.toHaveBeenCalled()
 })

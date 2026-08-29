@@ -1,4 +1,4 @@
-import type { Capability } from './types'
+import type { Capability, Freshness } from './types'
 
 export type GameType =
   | 'preseason'
@@ -34,5 +34,8 @@ export interface GameSummary {
 export interface GamesByDateResponse {
   official_date: string
   capability: Capability
+  season_id: number | null
+  game_type: GameType | null
+  freshness: Freshness
   games: GameSummary[]
 }
