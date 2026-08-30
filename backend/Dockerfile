@@ -7,7 +7,8 @@ RUN apt-get update && \
         curl \
         ca-certificates \
         nodejs \
-        npm && \
+        npm \
+        bubblewrap && \
     rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL https://chatgpt.com/codex/install.sh | sh

@@ -1,0 +1,119 @@
+:root[data-theme='light'] {
+  --page-bg: #f2f4f7;
+  --surface: #ffffff;
+  --surface-muted: #e8edf3;
+  --text-primary: #111827;
+  --text-secondary: #536173;
+  --border-strong: #c9d2dd;
+  --brand: #123b66;
+  --accent-text: #123b66;
+  --live: #b42318;
+}
+
+:root[data-theme='dark'] {
+  --page-bg: #0d1520;
+  --surface: #162231;
+  --surface-muted: #202f40;
+  --text-primary: #f4f7fb;
+  --text-secondary: #aebccd;
+  --border-strong: #33465c;
+  --brand: #081e36;
+  --accent-text: #9cc9f5;
+  --live: #ff7b72;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.scores-state button {
+  border: 1px solid rgb(255 255 255 / 45%);
+  border-radius: 0.4rem;
+  color: var(--brand-contrast);
+  background: var(--brand);
+  cursor: pointer;
+  font: inherit;
+  margin-top: 1rem;
+  padding: 0.45rem 0.7rem;
+}
+
+.scores-state button:focus-visible {
+  outline: 3px solid #f9c74f;
+  outline-offset: 3px;
+}
+
+.theme-switch {
+  display: inline-flex;
+  align-items: center;
+  color: var(--brand-contrast);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 650;
+  line-height: 1;
+}
+
+.theme-switch-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.theme-switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.theme-switch-track {
+  position: relative;
+  width: 2.4rem;
+  height: 1.35rem;
+  border: 1px solid rgb(255 255 255 / 60%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 20%);
+  transition: background 160ms ease;
+}
+
+.theme-switch-thumb {
+  position: absolute;
+  top: 0.11rem;
+  left: 0.13rem;
+  display: grid;
+  place-items: center;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  color: var(--brand);
+  background: var(--brand-contrast);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 35%);
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+  transition: transform 160ms ease;
+}
+
+.theme-switch input:checked + .theme-switch-track {
+  background: #3b82f6;
+}
+
+.theme-switch input:checked + .theme-switch-track .theme-switch-thumb {
+  transform: translateX(1.1rem);
+}
+
+.theme-switch input:focus-visible + .theme-switch-track {
+  outline: 3px solid #f9c74f;
+  outline-offset: 3px;
+}
+
+@media (max-width: 36rem) {
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

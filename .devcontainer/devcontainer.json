@@ -3,7 +3,10 @@
   "dockerComposeFile": "../docker-compose.yml",
   "service": "backend",
   "workspaceFolder": "/workspace",
-  "mounts": ["source=codex-config,target=/root/.codex,type=volume"],
+  "mounts": [
+    "source=codex-config,target=/root/.codex,type=volume",
+    "source=agent-skills,target=/root/.agents,type=volume"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
@@ -29,5 +32,5 @@
       }
     }
   },
-  "postCreateCommand": "cd backend && pip install -r requirements.txt && git config --global user.email 'tyler.forgione26@gmail.com' && git config --global user.name 'Tyler Forgione'"
+  "postCreateCommand": "cd backend && pip install -r requirements.txt && git config --global user.email 'tyler.forgione26@gmail.com' && git config --global user.name 'Tyler Forgione' && npx skills@latest add mattpocock/skills --agent codex --global --yes"
 }
