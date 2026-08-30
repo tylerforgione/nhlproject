@@ -7,6 +7,28 @@ from app.models.season import Season
 from app.models.team import Team
 
 
+def _add_filtering_schedule_context(db_session):
+    official_date = date(2026, 5, 15)
+    seasons = [
+        Season(
+            id=20242025,
+            standings_start=date(2024, 10, 4),
+            standings_end=date(2025, 4, 17),
+        ),
+        Season(
+            id=20252026,
+            standings_start=date(2025, 10, 7),
+            standings_end=date(2026, 4, 16),
+        ),
+    ]
+    away_team = Team(id=1, name="Boston Bruins", abbrev="BOS", is_nhl=True)
+    home_team = Team(
+        id=2, name="New York Rangers", abbrev="NYR", is_nhl=True
+    )
+    db_session.add_all([*seasons, away_team, home_team])
+    return official_date, away_team, home_team
+
+
 def test_games_by_official_date_returns_an_empty_collection(client):
     response = client.get(
         "/api/v1/games", params={"official_date": "2026-01-15"}
@@ -144,21 +166,9 @@ def test_games_by_official_date_preserves_an_unknown_upstream_state(
 def test_games_by_official_date_applies_season_and_game_type_reference_state(
     client, db_session
 ):
-    official_date = date(2026, 5, 15)
-    seasons = [
-        Season(
-            id=20242025,
-            standings_start=date(2024, 10, 4),
-            standings_end=date(2025, 4, 17),
-        ),
-        Season(
-            id=20252026,
-            standings_start=date(2025, 10, 7),
-            standings_end=date(2026, 4, 16),
-        ),
-    ]
-    away_team = Team(id=1, name="Boston Bruins", abbrev="BOS", is_nhl=True)
-    home_team = Team(id=2, name="New York Rangers", abbrev="NYR", is_nhl=True)
+    official_date, away_team, home_team = _add_filtering_schedule_context(
+        db_session
+    )
     games = [
         Game(
             id=2024030111,
@@ -181,7 +191,7 @@ def test_games_by_official_date_applies_season_and_game_type_reference_state(
             game_state="LIVE",
         ),
     ]
-    db_session.add_all([*seasons, away_team, home_team, *games])
+    db_session.add_all(games)
     db_session.commit()
 
     response = client.get(
@@ -202,21 +212,9 @@ def test_games_by_official_date_applies_season_and_game_type_reference_state(
 def test_games_by_official_date_applies_only_the_requested_schedule_season(
     client, db_session
 ):
-    official_date = date(2026, 5, 15)
-    seasons = [
-        Season(
-            id=20242025,
-            standings_start=date(2024, 10, 4),
-            standings_end=date(2025, 4, 17),
-        ),
-        Season(
-            id=20252026,
-            standings_start=date(2025, 10, 7),
-            standings_end=date(2026, 4, 16),
-        ),
-    ]
-    away_team = Team(id=1, name="Boston Bruins", abbrev="BOS", is_nhl=True)
-    home_team = Team(id=2, name="New York Rangers", abbrev="NYR", is_nhl=True)
+    official_date, away_team, home_team = _add_filtering_schedule_context(
+        db_session
+    )
     games = [
         Game(
             id=2024030111,
@@ -246,7 +244,7 @@ def test_games_by_official_date_applies_only_the_requested_schedule_season(
             neutral_site=False,
         ),
     ]
-    db_session.add_all([*seasons, away_team, home_team, *games])
+    db_session.add_all(games)
     db_session.commit()
 
     response = client.get(
@@ -277,21 +275,9 @@ def test_games_by_official_date_applies_only_the_requested_schedule_season(
 def test_games_by_official_date_applies_only_the_requested_game_type(
     client, db_session, game_type, expected_ids
 ):
-    official_date = date(2026, 5, 15)
-    seasons = [
-        Season(
-            id=20242025,
-            standings_start=date(2024, 10, 4),
-            standings_end=date(2025, 4, 17),
-        ),
-        Season(
-            id=20252026,
-            standings_start=date(2025, 10, 7),
-            standings_end=date(2026, 4, 16),
-        ),
-    ]
-    away_team = Team(id=1, name="Boston Bruins", abbrev="BOS", is_nhl=True)
-    home_team = Team(id=2, name="New York Rangers", abbrev="NYR", is_nhl=True)
+    official_date, away_team, home_team = _add_filtering_schedule_context(
+        db_session
+    )
     games = [
         Game(
             id=season_prefix + type_id * 10000 + 1,
@@ -308,7 +294,7 @@ def test_games_by_official_date_applies_only_the_requested_game_type(
         ]
         for type_id in [1, 2, 3]
     ]
-    db_session.add_all([*seasons, away_team, home_team, *games])
+    db_session.add_all(games)
     db_session.commit()
 
     response = client.get(
