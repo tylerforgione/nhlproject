@@ -54,7 +54,9 @@ def list_games_by_official_date(
         )
 
     games = db.scalars(
-        games_query.order_by(Game.start_time_utc.asc(), Game.id.asc())
+        games_query.order_by(
+            Game.start_time_utc.asc().nulls_last(), Game.id.asc()
+        )
     ).all()
     summaries = []
 
