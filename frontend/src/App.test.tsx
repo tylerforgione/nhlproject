@@ -57,3 +57,25 @@ it('shows todays scheduled games through the Home route', async () => {
   expect(screen.getByText('7:30 PM EST')).toBeInTheDocument()
   expect(screen.getByText('Scheduled')).toBeInTheDocument()
 })
+
+it('shows games with malformed reference data without a Games link', async () => {
+  appApiMocks.getCurrentContext.mockResolvedValue(currentContext)
+  appApiMocks.getGamesByOfficialDate.mockResolvedValue(
+    gamesResponseFixture({
+      games: [gameSummaryFixture({ official_date: 'not-a-date' })],
+    }),
+  )
+
+  render(
+    <MemoryRouter initialEntries={['/']}>
+      <App />
+    </MemoryRouter>,
+  )
+
+  expect(await screen.findByText('Boston Bruins')).toBeInTheDocument()
+  expect(
+    screen.queryByRole('link', {
+      name: 'View Boston Bruins at New York Rangers in Games',
+    }),
+  ).not.toBeInTheDocument()
+})
