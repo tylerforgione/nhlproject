@@ -37,7 +37,7 @@ it('shows todays scheduled games through the Home route', async () => {
     within(navigation).getAllByRole('link').map((link) => link.textContent),
   ).toEqual(['Home', 'Games'])
   expect(
-    await screen.findByRole('heading', { name: "Today's games" }),
+    await screen.findByRole('heading', { level: 1, name: "Today's games" }),
   ).toBeInTheDocument()
   const scoresBanner = screen.getByRole('region', { name: "Today's games" })
   expect(screen.getByRole('main').firstElementChild).toBe(scoresBanner)

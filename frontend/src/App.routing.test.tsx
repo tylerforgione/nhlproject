@@ -5,6 +5,7 @@ import { beforeEach, expect, it } from 'vitest'
 import {
   appApiMocks,
   currentContextFixture,
+  gameSummaryFixture,
   gamesResponseFixture,
   resetAppApiMocks,
 } from './test/appApiMocks'
@@ -14,7 +15,11 @@ beforeEach(resetAppApiMocks)
 
 it('supports direct loading of the working Games destination', async () => {
   appApiMocks.getCurrentContext.mockResolvedValue(currentContextFixture())
-  appApiMocks.getGamesByOfficialDate.mockResolvedValue(gamesResponseFixture())
+  appApiMocks.getGamesByOfficialDate.mockResolvedValue(
+    gamesResponseFixture({
+      games: [gameSummaryFixture()],
+    }),
+  )
 
   render(
     <MemoryRouter initialEntries={['/games']}>
@@ -26,8 +31,15 @@ it('supports direct loading of the working Games destination', async () => {
     await screen.findByRole('heading', { level: 1, name: 'Games' }),
   ).toBeInTheDocument()
   expect(
-    screen.getByRole('heading', { level: 2, name: "Today's games" }),
+    screen.getByRole('heading', {
+      level: 2,
+      name: 'Games for January 15, 2026',
+    }),
   ).toBeInTheDocument()
+  expect(
+    screen.getByRole('region', { name: 'NHL games for January 15, 2026' }),
+  ).toHaveAttribute('tabindex', '0')
+  expect(screen.queryByRole('link', { name: /in Games/ })).not.toBeInTheDocument()
   expect(screen.getByRole('link', { name: 'Games' })).toHaveAttribute(
     'aria-current',
     'page',

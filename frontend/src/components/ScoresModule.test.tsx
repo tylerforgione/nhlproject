@@ -14,7 +14,7 @@ it('renders caller-supplied scores presentation text and semantics', () => {
         heading="Games for January 15"
         headingLevel={2}
         officialDate="2026-01-15"
-        gamesLabel="January 15 NHL games"
+        scoresRegionLabel="January 15 NHL games"
       />
     </MemoryRouter>,
   )
@@ -66,7 +66,7 @@ it('uses the caller link resolver for linked and unlinked Game Cards', () => {
         heading="Games for January 15"
         headingLevel={2}
         officialDate="2026-01-15"
-        gamesLabel="January 15 NHL games"
+        scoresRegionLabel="January 15 NHL games"
         getGameLink={(game) =>
           game.id === linkedGame.id
             ? {
@@ -98,7 +98,7 @@ it('associates each Scores Module with its own heading', () => {
         heading="January 15 games"
         headingLevel={2}
         officialDate="2026-01-15"
-        gamesLabel="January 15 NHL games"
+        scoresRegionLabel="January 15 NHL games"
       />
       <ScoresModule
         games={[gameSummaryFixture({ id: 2025020711 })]}
@@ -106,7 +106,7 @@ it('associates each Scores Module with its own heading', () => {
         heading="January 16 games"
         headingLevel={2}
         officialDate="2026-01-16"
-        gamesLabel="January 16 NHL games"
+        scoresRegionLabel="January 16 NHL games"
       />
     </MemoryRouter>,
   )
@@ -134,7 +134,7 @@ it('renders empty games without adding empty-state policy', () => {
         heading="Games for January 15"
         headingLevel={2}
         officialDate="2026-01-15"
-        gamesLabel="January 15 NHL games"
+        scoresRegionLabel="January 15 NHL games"
       />
     </MemoryRouter>,
   )
