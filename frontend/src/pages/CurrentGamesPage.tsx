@@ -6,6 +6,7 @@ import type { GameSummary, GamesByDateResponse } from '../api/game-types'
 import { getCurrentContext } from '../api/home'
 import type { CurrentContext } from '../api/types'
 import {
+  gamesReferenceFromGame,
   gamesReferenceHref,
   parseGamesReference,
 } from '../routing/gamesReference'
@@ -86,12 +87,13 @@ function GameCard({
     </article>
   )
 
-  if (!linkToGames) return card
+  const reference = linkToGames ? gamesReferenceFromGame(game) : null
+  if (!reference) return card
 
   return (
     <Link
       className="game-card-link"
-      to={gamesReferenceHref(game)}
+      to={gamesReferenceHref(reference)}
       aria-label={`View ${game.away_team.name} at ${game.home_team.name} in Games`}
     >
       {card}
@@ -168,9 +170,19 @@ export function CurrentGamesPage({ isGamesPage = false }: CurrentGamesPageProps)
     let active = true
     async function loadGames() {
       try {
-        const reference = isGamesPage
+        const parseResult = isGamesPage
           ? parseGamesReference(location.search)
-          : null
+          : { status: 'absent' as const }
+        const reference =
+          parseResult.status === 'valid' &&
+          parseResult.reference.seasonId !== undefined &&
+          parseResult.reference.gameType !== undefined
+            ? {
+                officialDate: parseResult.reference.officialDate,
+                seasonId: parseResult.reference.seasonId,
+                gameType: parseResult.reference.gameType,
+              }
+            : null
         let context: ScoresContext
         let officialDate: string
 
