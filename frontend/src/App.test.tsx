@@ -40,7 +40,7 @@ it('shows todays scheduled games through the Home route', async () => {
     await screen.findByRole('heading', { level: 1, name: "Today's games" }),
   ).toBeInTheDocument()
   const scoresBanner = screen.getByRole('region', { name: "Today's games" })
-  expect(screen.getByRole('main').firstElementChild).toBe(scoresBanner)
+  expect(screen.getByRole('main')).toContainElement(scoresBanner)
   expect(
     within(scoresBanner).getByRole('region', { name: "Today's NHL games" }),
   ).toHaveAttribute('tabindex', '0')

@@ -23,4 +23,7 @@ it('shows a deliberate empty state for an official date with no games', async ()
     await screen.findByText('No NHL games are scheduled for this official date.'),
   ).toBeInTheDocument()
   expect(screen.getByText('January 15, 2026')).toBeInTheDocument()
+  expect(
+    screen.queryByRole('region', { name: "Today's NHL games" }),
+  ).not.toBeInTheDocument()
 })

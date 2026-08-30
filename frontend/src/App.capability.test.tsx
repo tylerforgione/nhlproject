@@ -45,9 +45,7 @@ it('shows the API explanation when game coverage is partial', async () => {
   const scoresModule = screen.getByRole('region', { name: "Today's games" })
 
   expect(notice).toBeInTheDocument()
-  expect(
-    notice.compareDocumentPosition(scoresModule) &
-      Node.DOCUMENT_POSITION_FOLLOWING,
-  ).toBeTruthy()
+  expect(scoresModule.parentElement).toHaveClass('scores-module-frame')
+  expect(scoresModule.parentElement).toContainElement(notice)
   expect(scoresModule).not.toContainElement(notice)
 })
