@@ -39,7 +39,13 @@ it('shows the API explanation when game coverage is partial', async () => {
     </MemoryRouter>,
   )
 
-  expect(
-    await screen.findByText('Some historical schedules are incomplete.'),
-  ).toBeInTheDocument()
+  const notice = await screen.findByText(
+    'Some historical schedules are incomplete.',
+  )
+  const scoresModule = screen.getByRole('region', { name: "Today's games" })
+
+  expect(notice).toBeInTheDocument()
+  expect(scoresModule.parentElement).toHaveClass('scores-module-frame')
+  expect(scoresModule.parentElement).toContainElement(notice)
+  expect(scoresModule).not.toContainElement(notice)
 })

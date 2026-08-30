@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import { getGamesByOfficialDate } from '../api/games'
 import type { GameSummary, GamesByDateResponse } from '../api/game-types'
 import { getCurrentContext } from '../api/home'
 import type { CurrentContext } from '../api/types'
+import { ScoresModule } from '../components/ScoresModule'
 import {
   gamesReferenceFromGame,
   gamesReferenceHref,
@@ -28,136 +29,23 @@ interface CurrentGamesPageProps {
   isGamesPage?: boolean
 }
 
-function formatStartTime(startTimeUtc: string | null): string {
-  if (!startTimeUtc) return 'Time unavailable'
+function getHomeGameLink(game: GameSummary) {
+  const reference = gamesReferenceFromGame(game)
+  if (!reference) return null
 
+  return {
+    to: gamesReferenceHref(reference),
+    ariaLabel: `View ${game.away_team.name} at ${game.home_team.name} in Games`,
+  }
+}
+
+function formatGamesDateLabel(officialDate: string): string {
   return new Intl.DateTimeFormat(undefined, {
-    hour: 'numeric',
-    minute: '2-digit',
-    timeZoneName: 'short',
-  }).format(new Date(startTimeUtc))
-}
-
-function formatStatus(game: GameSummary): string {
-  if (game.state === 'scheduled') return 'Scheduled'
-  if (game.state === 'live') return 'Live'
-  if (game.state === 'final') return 'Final'
-  return 'Status unavailable'
-}
-
-function Team({ game, side }: { game: GameSummary; side: 'away' | 'home' }) {
-  const team = side === 'away' ? game.away_team : game.home_team
-  const score = side === 'away' ? game.away_score : game.home_score
-
-  return (
-    <div className="team-row">
-      <span className="team-abbreviation" aria-hidden="true">
-        {team.abbreviation}
-      </span>
-      <span className="team-name">{team.name}</span>
-      {score === null ? (
-        <span className="team-score" aria-label="Score unavailable">
-          —
-        </span>
-      ) : (
-        <strong className="team-score">{score}</strong>
-      )}
-    </div>
-  )
-}
-
-function GameCard({
-  game,
-  linkToGames,
-}: {
-  game: GameSummary
-  linkToGames: boolean
-}) {
-  const card = (
-    <article className="game-card">
-      <div className="game-meta">
-        <span>{formatStartTime(game.start_time_utc)}</span>
-        <span className={`game-state game-state-${game.state}`}>
-          {formatStatus(game)}
-        </span>
-      </div>
-      <Team game={game} side="away" />
-      <Team game={game} side="home" />
-      {game.venue && <p className="venue">{game.venue}</p>}
-    </article>
-  )
-
-  const reference = linkToGames ? gamesReferenceFromGame(game) : null
-  if (!reference) return card
-
-  return (
-    <Link
-      className="game-card-link"
-      to={gamesReferenceHref(reference)}
-      aria-label={`View ${game.away_team.name} at ${game.home_team.name} in Games`}
-    >
-      {card}
-    </Link>
-  )
-}
-
-function ScoresModule({
-  data,
-  headingLevel = 1,
-  linkToGames = false,
-}: {
-  data: HomeData
-  headingLevel?: 1 | 2
-  linkToGames?: boolean
-}) {
-  return (
-    <section className="scores-section" aria-labelledby="todays-games-heading">
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">{data.context.active_season_phase}</p>
-          {headingLevel === 1 ? (
-            <h1 id="todays-games-heading">Today's games</h1>
-          ) : (
-            <h2 id="todays-games-heading">Today's games</h2>
-          )}
-        </div>
-        <time dateTime={data.schedule.official_date}>
-          {new Intl.DateTimeFormat(undefined, {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-            timeZone: 'UTC',
-          }).format(new Date(`${data.schedule.official_date}T12:00:00Z`))}
-        </time>
-      </div>
-      <div className="scores-content">
-        {data.schedule.capability.state !== 'available' &&
-          data.schedule.capability.explanation && (
-            <p className="coverage-notice">
-              {data.schedule.capability.explanation}
-            </p>
-          )}
-        {data.schedule.games.length === 0 ? (
-          <div className="scores-state">
-            <p role="status">
-              No NHL games are scheduled for this official date.
-            </p>
-          </div>
-        ) : (
-          <div
-            className="scores-scroll"
-            role="region"
-            tabIndex={0}
-            aria-label="Today's NHL games"
-          >
-            {data.schedule.games.map((game) => (
-              <GameCard game={game} key={game.id} linkToGames={linkToGames} />
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
-  )
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${officialDate}T12:00:00Z`))
 }
 
 export function CurrentGamesPage({ isGamesPage = false }: CurrentGamesPageProps) {
@@ -255,14 +143,53 @@ export function CurrentGamesPage({ isGamesPage = false }: CurrentGamesPageProps)
     )
   }
 
+  const officialDateLabel = formatGamesDateLabel(data.schedule.official_date)
+  const scoresPresentation = isGamesPage
+    ? {
+        heading: `Games for ${officialDateLabel}`,
+        headingLevel: 2 as const,
+        regionLabel: `NHL games for ${officialDateLabel}`,
+        getGameLink: undefined,
+      }
+    : {
+        heading: "Today's games",
+        headingLevel: 1 as const,
+        regionLabel: "Today's NHL games",
+        getGameLink: getHomeGameLink,
+      }
+  const coverageExplanation =
+    data.schedule.capability.state !== 'available'
+      ? data.schedule.capability.explanation
+      : null
+
   return (
     <main className={`page-content ${isGamesPage ? 'games-page' : 'home-page'}`}>
       {isGamesPage && <h1 className="page-title">Games</h1>}
-      <ScoresModule
-        data={data}
-        headingLevel={isGamesPage ? 2 : 1}
-        linkToGames={!isGamesPage}
-      />
+      <div
+        className={`scores-module-frame${coverageExplanation ? ' has-scores-notice' : ''}`}
+      >
+        <ScoresModule
+          games={data.schedule.games}
+          eyebrow={data.context.active_season_phase}
+          heading={scoresPresentation.heading}
+          headingLevel={scoresPresentation.headingLevel}
+          officialDate={data.schedule.official_date}
+          scoresRegionLabel={scoresPresentation.regionLabel}
+          getGameLink={scoresPresentation.getGameLink}
+        />
+        {coverageExplanation && (
+          <div className="scores-page-notice">
+            <p className="coverage-notice">{coverageExplanation}</p>
+          </div>
+        )}
+        {data.schedule.games.length === 0 && (
+          <div className="scores-state scores-page-state">
+            <p role="status">
+              No NHL games are scheduled for this official date.
+            </p>
+          </div>
+        )}
+      </div>
     </main>
   )
 }
