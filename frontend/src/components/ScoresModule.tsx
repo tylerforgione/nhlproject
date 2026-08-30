@@ -2,6 +2,7 @@ import { useId } from 'react'
 import { Link } from 'react-router-dom'
 
 import type { GameSummary } from '../api/game-types'
+import { formatOfficialDate } from './formatOfficialDate'
 
 interface GameLink {
   to: string
@@ -107,29 +108,26 @@ export function ScoresModule({
           )}
         </div>
         <time dateTime={officialDate}>
-          {new Intl.DateTimeFormat(undefined, {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-            timeZone: 'UTC',
-          }).format(new Date(`${officialDate}T12:00:00Z`))}
+          {formatOfficialDate(officialDate)}
         </time>
       </div>
       <div className="scores-content">
-        <div
-          className="scores-scroll"
-          role="region"
-          tabIndex={0}
-          aria-label={scoresRegionLabel}
-        >
-          {games.map((game) => (
-            <GameCard
-              game={game}
-              key={game.id}
-              link={getGameLink?.(game) ?? null}
-            />
-          ))}
-        </div>
+        {games.length > 0 && (
+          <div
+            className="scores-scroll"
+            role="region"
+            tabIndex={0}
+            aria-label={scoresRegionLabel}
+          >
+            {games.map((game) => (
+              <GameCard
+                game={game}
+                key={game.id}
+                link={getGameLink?.(game) ?? null}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

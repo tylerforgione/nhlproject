@@ -89,11 +89,12 @@ body {
   padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 4rem);
 }
 
-.scores-section {
+:where(.scores-section, .scores-module-frame) {
   display: grid;
   grid-template-columns: minmax(9rem, 12rem) minmax(0, 1fr);
   align-items: center;
-  gap: clamp(0.75rem, 2vw, 1.5rem);
+  column-gap: clamp(0.75rem, 2vw, 1.5rem);
+  row-gap: 0.5rem;
   width: 100%;
   border-bottom: 1px solid var(--border-strong);
   background: var(--surface);
@@ -239,20 +240,38 @@ body {
   min-height: 5.5rem;
   max-width: none;
   margin: 0;
-  border: 0;
-  border-bottom: 1px solid var(--border-strong);
-  border-radius: 0;
 }
 
 .scores-page-notice {
-  background: var(--surface);
-  padding: 0.75rem clamp(1rem, 4vw, 4rem) 0;
+  min-width: 0;
 }
 
 .scores-page-notice .coverage-notice {
   margin: 0;
   padding: 0.45rem 0.65rem;
   font-size: 0.75rem;
+}
+
+.scores-module-frame > .scores-section,
+.scores-module-frame .scores-content {
+  display: contents;
+}
+
+.scores-module-frame .section-heading {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.scores-module-frame .scores-scroll,
+.scores-page-notice,
+.scores-page-state {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.has-scores-notice .scores-scroll,
+.has-scores-notice .scores-page-state {
+  grid-row: 2;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -280,8 +299,25 @@ body {
     gap: 0.2rem;
   }
 
-  .scores-section {
+  :where(.scores-section, .scores-module-frame) {
     grid-template-columns: 1fr;
+  }
+
+  .scores-module-frame .section-heading {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .scores-module-frame .scores-scroll,
+  .scores-page-notice,
+  .scores-page-state {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .has-scores-notice .scores-scroll,
+  .has-scores-notice .scores-page-state {
+    grid-row: 3;
   }
 
   .scores-scroll {
