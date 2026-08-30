@@ -235,13 +235,22 @@ body {
   white-space: nowrap;
 }
 
-.scores-section .scores-state {
+.scores-page-state {
   min-height: 5.5rem;
   max-width: none;
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid var(--border-strong);
+  border-radius: 0;
 }
 
-.scores-section .coverage-notice {
-  margin-bottom: 0.5rem;
+.scores-page-notice {
+  background: var(--surface);
+  padding: 0.75rem clamp(1rem, 4vw, 4rem) 0;
+}
+
+.scores-page-notice .coverage-notice {
+  margin: 0;
   padding: 0.45rem 0.65rem;
   font-size: 0.75rem;
 }

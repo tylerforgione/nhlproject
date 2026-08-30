@@ -1,5 +1,4 @@
 import { useId } from 'react'
-import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
 import type { GameSummary } from '../api/game-types'
@@ -15,9 +14,8 @@ interface ScoresModuleProps {
   heading: string
   headingLevel: 1 | 2
   officialDate: string
-  gamesLabel: string
+  scoresRegionLabel: string
   getGameLink?: (game: GameSummary) => GameLink | null
-  children?: ReactNode
 }
 
 function formatStartTime(startTimeUtc: string | null): string {
@@ -92,9 +90,8 @@ export function ScoresModule({
   heading,
   headingLevel,
   officialDate,
-  gamesLabel,
+  scoresRegionLabel,
   getGameLink,
-  children,
 }: ScoresModuleProps) {
   const headingId = useId()
 
@@ -119,23 +116,20 @@ export function ScoresModule({
         </time>
       </div>
       <div className="scores-content">
-        {children}
-        {games.length > 0 && (
-          <div
-            className="scores-scroll"
-            role="region"
-            tabIndex={0}
-            aria-label={gamesLabel}
-          >
-            {games.map((game) => (
-              <GameCard
-                game={game}
-                key={game.id}
-                link={getGameLink?.(game) ?? null}
-              />
-            ))}
-          </div>
-        )}
+        <div
+          className="scores-scroll"
+          role="region"
+          tabIndex={0}
+          aria-label={scoresRegionLabel}
+        >
+          {games.map((game) => (
+            <GameCard
+              game={game}
+              key={game.id}
+              link={getGameLink?.(game) ?? null}
+            />
+          ))}
+        </div>
       </div>
     </section>
   )
