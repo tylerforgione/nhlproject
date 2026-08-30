@@ -5,7 +5,6 @@ import { getGamesByOfficialDate } from '../api/games'
 import type { GameSummary, GamesByDateResponse } from '../api/game-types'
 import { getCurrentContext } from '../api/home'
 import type { CurrentContext } from '../api/types'
-import { formatOfficialDate } from '../components/formatOfficialDate'
 import { ScoresModule } from '../components/ScoresModule'
 import {
   gamesReferenceFromGame,
@@ -38,6 +37,15 @@ function getHomeGameLink(game: GameSummary) {
     to: gamesReferenceHref(reference),
     ariaLabel: `View ${game.away_team.name} at ${game.home_team.name} in Games`,
   }
+}
+
+function formatGamesDateLabel(officialDate: string): string {
+  return new Intl.DateTimeFormat(undefined, {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${officialDate}T12:00:00Z`))
 }
 
 export function CurrentGamesPage({ isGamesPage = false }: CurrentGamesPageProps) {
@@ -135,7 +143,7 @@ export function CurrentGamesPage({ isGamesPage = false }: CurrentGamesPageProps)
     )
   }
 
-  const officialDateLabel = formatOfficialDate(data.schedule.official_date)
+  const officialDateLabel = formatGamesDateLabel(data.schedule.official_date)
   const scoresPresentation = isGamesPage
     ? {
         heading: `Games for ${officialDateLabel}`,

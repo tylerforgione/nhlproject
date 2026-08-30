@@ -2,7 +2,6 @@ import { useId } from 'react'
 import { Link } from 'react-router-dom'
 
 import type { GameSummary } from '../api/game-types'
-import { formatOfficialDate } from './formatOfficialDate'
 
 interface GameLink {
   to: string
@@ -17,6 +16,15 @@ interface ScoresModuleProps {
   officialDate: string
   scoresRegionLabel: string
   getGameLink?: (game: GameSummary) => GameLink | null
+}
+
+function formatOfficialDate(officialDate: string): string {
+  return new Intl.DateTimeFormat(undefined, {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${officialDate}T12:00:00Z`))
 }
 
 function formatStartTime(startTimeUtc: string | null): string {
