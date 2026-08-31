@@ -235,6 +235,16 @@ it('renders named and Other games as distinct ordered Schedule Groups', async ()
       dark_logo_url: null,
     },
   })
+  const secondRegularGame = gameSummaryFixture({
+    id: 2025020714,
+    away_team: {
+      id: 6,
+      name: 'Toronto Maple Leafs',
+      abbreviation: 'TOR',
+      logo_url: null,
+      dark_logo_url: null,
+    },
+  })
   const unknown2025 = gameSummaryFixture({
     id: 2025020712,
     game_type: 'unknown',
@@ -262,7 +272,13 @@ it('renders named and Other games as distinct ordered Schedule Groups', async ()
     gamesResponseFixture({
       season_id: null,
       game_type: null,
-      games: [gameSummaryFixture(), unknown2025, playoffGame, unknown2024],
+      games: [
+        gameSummaryFixture(),
+        unknown2025,
+        secondRegularGame,
+        playoffGame,
+        unknown2024,
+      ],
     }),
   )
 
@@ -291,6 +307,13 @@ it('renders named and Other games as distinct ordered Schedule Groups', async ()
       screen.getByRole('region', { name: '2025–26 Other games' }),
     ).getByText('Ottawa Senators'),
   ).toBeInTheDocument()
+  const regularGames = within(
+    screen.getByRole('region', {
+      name: '2025–26 Regular Season games for January 15, 2026',
+    }),
+  ).getAllByRole('article')
+  expect(regularGames[0]).toHaveTextContent('Boston Bruins')
+  expect(regularGames[1]).toHaveTextContent('Toronto Maple Leafs')
 })
 
 it.each([
@@ -365,11 +388,15 @@ it('recovers an invalid Games link through explicit current-context replacement'
 
 it('retries a dated request without changing its Games Reference', async () => {
   const user = userEvent.setup()
+  let resolveRetry: (response: ReturnType<typeof gamesResponseFixture>) => void
+  const retryResponse = new Promise<ReturnType<typeof gamesResponseFixture>>(
+    (resolve) => {
+      resolveRetry = resolve
+    },
+  )
   appApiMocks.getGamesByOfficialDate
     .mockRejectedValueOnce(new Error('Unavailable'))
-    .mockResolvedValueOnce(
-      gamesResponseFixture({ official_date: '2026-01-14' }),
-    )
+    .mockReturnValueOnce(retryResponse)
 
   render(
     <MemoryRouter
@@ -390,6 +417,19 @@ it('retries a dated request without changing its Games Reference', async () => {
   expect(screen.getByText(/\/games\?date=2026-01-14.*\|POP/)).toBeInTheDocument()
 
   await user.click(screen.getByRole('button', { name: 'Try again' }))
+
+  expect(
+    await screen.findByText('Loading games for January 14, 2026…'),
+  ).toHaveAttribute('role', 'status')
+  expect(
+    screen.queryByRole('heading', {
+      name: "We couldn't load games for January 14, 2026",
+    }),
+  ).not.toBeInTheDocument()
+
+  await act(async () => {
+    resolveRetry(gamesResponseFixture({ official_date: '2026-01-14' }))
+  })
 
   expect(
     await screen.findByText(
@@ -632,4 +672,65 @@ it('renders a retryable bare-resolution failure', async () => {
   ).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Try again' })).toBeInTheDocument()
   expect(appApiMocks.getGamesByOfficialDate).not.toHaveBeenCalled()
+})
+
+it.each([
+  [
+    '/games?date=2026-01-15',
+    '/games?date=2026-01-15|POP',
+  ],
+  [
+    '/games?date=2026-01-15&season=20252026',
+    '/games?date=2026-01-15&season=20252026|POP',
+  ],
+])('preserves supplied scope for multiple named contexts in %s', async (url, state) => {
+  appApiMocks.getGamesByOfficialDate.mockResolvedValue(
+    gamesResponseFixture({
+      season_id: null,
+      game_type: null,
+      games: [
+        gameSummaryFixture(),
+        gameSummaryFixture({ id: 2025020711, game_type: 'playoffs' }),
+      ],
+    }),
+  )
+
+  render(
+    <MemoryRouter initialEntries={[url]}>
+      <App />
+      <RouteStateProbe />
+    </MemoryRouter>,
+  )
+
+  expect(await screen.findByText(state)).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: '2025–26 Regular Season' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: '2025–26 Playoffs' })).toBeInTheDocument()
+  expect(appApiMocks.getGamesByOfficialDate).toHaveBeenCalledTimes(1)
+})
+
+it('retries bare current-context resolution successfully', async () => {
+  const user = userEvent.setup()
+  appApiMocks.getCurrentContext
+    .mockRejectedValueOnce(new Error('Unavailable'))
+    .mockResolvedValueOnce(currentContextFixture())
+  appApiMocks.getGamesByOfficialDate.mockResolvedValue(gamesResponseFixture())
+
+  render(
+    <MemoryRouter initialEntries={['/games']}>
+      <App />
+      <RouteStateProbe />
+    </MemoryRouter>,
+  )
+
+  expect(
+    await screen.findByRole('heading', { name: "We couldn't load Games" }),
+  ).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Try again' }))
+
+  expect(
+    await screen.findByText(
+      '/games?date=2026-01-15&season=20252026&gameType=regular-season|REPLACE',
+    ),
+  ).toBeInTheDocument()
+  expect(appApiMocks.getCurrentContext).toHaveBeenCalledTimes(2)
 })
