@@ -53,4 +53,24 @@ describe('games API', () => {
       { headers: { Accept: 'application/json' } },
     )
   })
+
+  it.each([
+    [
+      { seasonId: 20252026 },
+      '/api/v1/games?official_date=2026-01-15&season_id=20252026',
+    ],
+    [
+      { gameType: 'regular-season' as const },
+      '/api/v1/games?official_date=2026-01-15&game_type=regular-season',
+    ],
+  ])('includes only supplied reference filters for %o', async (filters, url) => {
+    const fetchMock = stubSuccessfulFetch()
+
+    await getGamesByOfficialDate('2026-01-15', filters)
+
+    expect(fetchMock).toHaveBeenCalledWith(url, {
+      headers: { Accept: 'application/json' },
+    })
+  })
+
 })
