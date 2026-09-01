@@ -1,12 +1,12 @@
-from datetime import date, timedelta
+from datetime import timedelta
 
 from app.models.season import Season
 
 
 def test_current_context_uses_the_upcoming_schedule_season_in_the_offseason(
-    client, db_session
+    client, db_session, official_today
 ):
-    today = date.today()
+    today = official_today
     completed_season = Season(
         id=20252026,
         standings_start=today - timedelta(days=240),

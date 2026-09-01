@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import timedelta
 
 from app.models.game import Game
 from app.models.season import Season
@@ -6,9 +6,9 @@ from app.models.team import Team
 
 
 def test_current_context_uses_todays_playoff_game_as_the_active_phase(
-    client, db_session
+    client, db_session, official_today
 ):
-    today = date.today()
+    today = official_today
     season = Season(
         id=20252026,
         standings_start=today - timedelta(days=220),
@@ -35,8 +35,10 @@ def test_current_context_uses_todays_playoff_game_as_the_active_phase(
     assert response.json()["schedule_season_id"] == 20252026
 
 
-def test_current_context_keeps_the_playoff_phase_on_an_off_day(client, db_session):
-    today = date.today()
+def test_current_context_keeps_the_playoff_phase_on_an_off_day(
+    client, db_session, official_today
+):
+    today = official_today
     season = Season(
         id=20252026,
         standings_start=today - timedelta(days=220),
