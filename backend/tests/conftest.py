@@ -9,6 +9,7 @@ from sqlalchemy.pool import StaticPool
 os.environ.setdefault("DATABASE_URL", "sqlite+pysqlite:///:memory:")
 
 from app.db.base import Base, get_db
+from app.domain.official_date import current_official_date
 from app.main import app
 from app.models.game import Game
 from app.models.game_result import GameResult
@@ -43,3 +44,10 @@ def client(db_session):
         yield test_client
 
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def official_today(client):
+    today = current_official_date()
+    app.dependency_overrides[current_official_date] = lambda: today
+    return today

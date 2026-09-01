@@ -6,6 +6,7 @@ import './states.css'
 import './theme.css'
 import { RouteMetadata } from './RouteMetadata'
 import { CurrentGamesPage } from './pages/CurrentGamesPage'
+import { GamesPage } from './pages/GamesPage'
 import { useTheme } from './theme'
 
 function App() {
@@ -41,7 +42,7 @@ function App() {
       </header>
       <Routes>
         <Route path="/" element={<CurrentGamesPage />} />
-        <Route path="/games" element={<CurrentGamesPage isGamesPage />} />
+        <Route path="/games" element={<GamesPage />} />
       </Routes>
     </div>
   )

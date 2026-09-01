@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
 
-import { getGamesByOfficialDate } from '../api/games'
 import type { GameSummary, GamesByDateResponse } from '../api/game-types'
+import { getGamesByOfficialDate } from '../api/games'
 import { getCurrentContext } from '../api/home'
 import type { CurrentContext } from '../api/types'
 import { ScoresModule } from '../components/ScoresModule'
 import {
   gamesReferenceFromGame,
   gamesReferenceHref,
-  parseGamesReference,
 } from '../routing/gamesReference'
 
 interface ScoresContext {
@@ -25,10 +23,6 @@ interface HomeData {
 
 type LoadState = 'loading' | 'success' | 'error'
 
-interface CurrentGamesPageProps {
-  isGamesPage?: boolean
-}
-
 function getHomeGameLink(game: GameSummary) {
   const reference = gamesReferenceFromGame(game)
   if (!reference) return null
@@ -39,66 +33,30 @@ function getHomeGameLink(game: GameSummary) {
   }
 }
 
-function formatGamesDateLabel(officialDate: string): string {
-  return new Intl.DateTimeFormat(undefined, {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-    timeZone: 'UTC',
-  }).format(new Date(`${officialDate}T12:00:00Z`))
-}
-
-export function CurrentGamesPage({ isGamesPage = false }: CurrentGamesPageProps) {
+export function CurrentGamesPage() {
   const [data, setData] = useState<HomeData | null>(null)
-  const location = useLocation()
   const [loadState, setLoadState] = useState<LoadState>('loading')
-  const [attempt, setAttempt] = useState(0)
+  const [retryGeneration, setRetryGeneration] = useState(0)
 
   useEffect(() => {
     let active = true
+
     async function loadGames() {
       try {
-        const parseResult = isGamesPage
-          ? parseGamesReference(location.search)
-          : { status: 'absent' as const }
-        const reference =
-          parseResult.status === 'valid' &&
-          parseResult.reference.seasonId !== undefined &&
-          parseResult.reference.gameType !== undefined
-            ? {
-                officialDate: parseResult.reference.officialDate,
-                seasonId: parseResult.reference.seasonId,
-                gameType: parseResult.reference.gameType,
-              }
-            : null
-        let context: ScoresContext
-        let officialDate: string
-
-        if (reference) {
-          context = { active_season_phase: reference.gameType }
-          officialDate = reference.officialDate
-        } else {
-          const currentContext = await getCurrentContext()
-          context = {
-            active_season_phase: currentContext.active_season_phase,
-          }
-          officialDate = currentContext.official_date
-        }
-
+        const currentContext = await getCurrentContext()
+        if (!active) return
         const schedule = await getGamesByOfficialDate(
-          officialDate,
-          reference
-            ? {
-                seasonId: reference.seasonId,
-                gameType: reference.gameType,
-              }
-            : undefined,
+          currentContext.official_date,
         )
+        if (!active) return
 
-        if (active) {
-          setData({ context, schedule })
-          setLoadState('success')
-        }
+        setData({
+          context: {
+            active_season_phase: currentContext.active_season_phase,
+          },
+          schedule,
+        })
+        setLoadState('success')
       } catch {
         if (active) setLoadState('error')
       }
@@ -109,7 +67,7 @@ export function CurrentGamesPage({ isGamesPage = false }: CurrentGamesPageProps)
     return () => {
       active = false
     }
-  }, [attempt, isGamesPage, location.search])
+  }, [retryGeneration])
 
   if (loadState === 'error') {
     return (
@@ -122,7 +80,7 @@ export function CurrentGamesPage({ isGamesPage = false }: CurrentGamesPageProps)
               type="button"
               onClick={() => {
                 setLoadState('loading')
-                setAttempt((value) => value + 1)
+                setRetryGeneration((value) => value + 1)
               }}
             >
               Try again
@@ -143,39 +101,24 @@ export function CurrentGamesPage({ isGamesPage = false }: CurrentGamesPageProps)
     )
   }
 
-  const officialDateLabel = formatGamesDateLabel(data.schedule.official_date)
-  const scoresPresentation = isGamesPage
-    ? {
-        heading: `Games for ${officialDateLabel}`,
-        headingLevel: 2 as const,
-        regionLabel: `NHL games for ${officialDateLabel}`,
-        getGameLink: undefined,
-      }
-    : {
-        heading: "Today's games",
-        headingLevel: 1 as const,
-        regionLabel: "Today's NHL games",
-        getGameLink: getHomeGameLink,
-      }
   const coverageExplanation =
     data.schedule.capability.state !== 'available'
       ? data.schedule.capability.explanation
       : null
 
   return (
-    <main className={`page-content ${isGamesPage ? 'games-page' : 'home-page'}`}>
-      {isGamesPage && <h1 className="page-title">Games</h1>}
+    <main className="page-content home-page">
       <div
         className={`scores-module-frame${coverageExplanation ? ' has-scores-notice' : ''}`}
       >
         <ScoresModule
           games={data.schedule.games}
           eyebrow={data.context.active_season_phase}
-          heading={scoresPresentation.heading}
-          headingLevel={scoresPresentation.headingLevel}
+          heading="Today's games"
+          headingLevel={1}
           officialDate={data.schedule.official_date}
-          scoresRegionLabel={scoresPresentation.regionLabel}
-          getGameLink={scoresPresentation.getGameLink}
+          scoresRegionLabel="Today's NHL games"
+          getGameLink={getHomeGameLink}
         />
         {coverageExplanation && (
           <div className="scores-page-notice">

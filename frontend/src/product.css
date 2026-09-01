@@ -89,6 +89,29 @@ body {
   padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 4rem);
 }
 
+.scores-page-notices {
+  display: grid;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-strong);
+  background: var(--surface);
+  padding: 0 clamp(1rem, 4vw, 4rem) 1rem;
+}
+
+.scores-page-notices .coverage-notice {
+  margin: 0;
+}
+
+.scores-groups {
+  display: grid;
+}
+
+.scores-groups > .scores-page-state {
+  grid-column: 1;
+  grid-row: auto;
+  min-height: 12rem;
+  margin: clamp(1rem, 4vw, 4rem);
+}
+
 :where(.scores-section, .scores-module-frame) {
   display: grid;
   grid-template-columns: minmax(9rem, 12rem) minmax(0, 1fr);
